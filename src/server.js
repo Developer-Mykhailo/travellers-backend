@@ -3,7 +3,10 @@ import cors from 'cors';
 import pino from 'pino-http';
 import helmet from 'helmet';
 
+import router from './routers/index.js';
 import { getEnvVar } from './utils/getEnvVar.js';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
+import { errorHandler } from './middlewares/errorHandler.js';
 
 //---------------------------------------------------------------
 
@@ -25,11 +28,10 @@ export const startServer = async () => {
     }),
   );
 
-  app.get('/', (req, res) => {
-    res.json({
-      message: 'Hello world',
-    });
-  });
+  app.use('/api', router);
+
+  app.use(notFoundHandler);
+  app.use(errorHandler);
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
