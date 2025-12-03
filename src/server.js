@@ -11,9 +11,8 @@ import { errorHandler } from './middlewares/errorHandler.js';
 //---------------------------------------------------------------
 
 const PORT = Number(getEnvVar('PORT', 3001));
-console.log(PORT);
 
-export const startServer = async () => {
+export const startServer = () => {
   const app = express();
 
   app.use(express.json());

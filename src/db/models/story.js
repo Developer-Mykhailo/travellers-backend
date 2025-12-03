@@ -1,4 +1,7 @@
 import { Schema, model } from 'mongoose';
+import { STORY_CATEGORIES } from '../../constants/validation.js';
+// eslint-disable-next-line
+import { UserCollection } from './users.js';
 
 const storySchema = new Schema(
   {
@@ -13,17 +16,7 @@ const storySchema = new Schema(
     },
     category: {
       type: String,
-      enum: [
-        'Азія',
-        'Гори',
-        'Європа',
-        'Америка',
-        'Африка',
-        'Пустелі',
-        'Балкани',
-        'Кавказ',
-        'Океанія',
-      ],
+      enum: STORY_CATEGORIES,
       required: true,
     },
     ownerId: {

@@ -19,7 +19,7 @@ const userSchema = new Schema(
       type: String,
       default: '',
     },
-    bio: {
+    description: {
       type: String,
       default: '',
     },
