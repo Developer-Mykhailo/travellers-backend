@@ -19,13 +19,18 @@ export const getStories = async (
     countQuery.where('category').equals(filters.category);
   }
 
-  if (filters.ownerId) {
-    storiesQuery.where('ownerId').equals(filters.ownerId);
-    countQuery.where('ownerId').equals(filters.ownerId);
+  if (filters.owner) {
+    storiesQuery.where('owner').equals(filters.owner);
+    countQuery.where('owner').equals(filters.owner);
+  }
+
+  if (filters.search) {
+    storiesQuery.where('article').regex(filters.search);
+    countQuery.where('article').regex(filters.search);
   }
 
   storiesQuery.populate([
-    { path: 'ownerId', select: 'name avatar description' },
+    { path: 'owner', select: 'name avatar description' },
     { path: 'category', select: 'name' },
   ]);
 
@@ -39,14 +44,14 @@ export const getStories = async (
   ]);
 
   //  form the final objects
-  const modifiedStories = stories.map((story) => {
-    const obj = story.toObject();
-    obj.owner = obj.ownerId;
-    delete obj.ownerId;
-    return obj;
-  });
+  // const modifiedStories = stories.map((story) => {
+  //   const obj = story.toObject();
+  //   obj.owner = obj.ownerId;
+  //   delete obj.ownerId;
+  //   return obj;
+  // });
 
   const paginationData = calculatePaginationData(storiesCount, perPage, page);
 
-  return { data: modifiedStories, ...paginationData };
+  return { data: stories, ...paginationData };
 };

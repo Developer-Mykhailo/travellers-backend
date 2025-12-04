@@ -19,7 +19,7 @@ const storySchema = new Schema(
       ref: 'categories',
       required: true,
     },
-    ownerId: {
+    owner: {
       type: Schema.Types.ObjectId,
       ref: 'users',
       required: true,

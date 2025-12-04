@@ -2,13 +2,11 @@ import createHttpError from 'http-errors';
 import { CategoryCollection } from '../db/models/category.js';
 import { UserCollection } from '../db/models/users.js';
 
-export const parseFilters = async ({ category, ownerId }) => {
+export const parseFilters = async ({ category, owner, query }) => {
   const result = {};
 
   //todo category
   if (category) {
-    // const decoded = decodeURIComponent(category);
-
     const categories = await CategoryCollection.find({
       name: { $regex: category, $options: 'i' },
     });
@@ -18,17 +16,23 @@ export const parseFilters = async ({ category, ownerId }) => {
   }
 
   //todo owner
-  if (ownerId) {
-    // const decoded = decodeURIComponent(ownerId);
-
+  if (owner) {
     const users = await UserCollection.find({
-      name: { $regex: ownerId, $options: 'i' }, // нечутливо до регістру + частковий пошук
+      $or: [
+        { name: { $regex: owner, $options: 'i' } },
+        { description: { $regex: owner, $options: 'i' } },
+      ],
     });
 
     if (users.length === 0)
-      throw createHttpError(400, `User not found: ${ownerId}`);
+      throw createHttpError(400, `User not found: ${owner}`);
 
-    result.ownerId = users.map((u) => u._id);
+    result.owner = users.map((u) => u._id);
+  }
+
+  //todo
+  if (query) {
+    result.search = new RegExp(query, 'i');
   }
 
   return result;
