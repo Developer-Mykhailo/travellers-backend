@@ -1,10 +1,10 @@
-import { CategoryCollection } from '../db/models/category.js';
 import { StoriesCollection } from '../db/models/story.js';
+
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
 export const getStories = async (
   page = 1,
-  perPage = 10,
+  perPage = 5,
   sortBy,
   sortOrder,
   filters,
@@ -12,22 +12,22 @@ export const getStories = async (
   const skip = (page - 1) * perPage;
 
   const storiesQuery = StoriesCollection.find();
-  const category = await CategoryCollection.findOne({ _id: filters.category });
+  const countQuery = StoriesCollection.find();
 
   if (filters.category) {
-    storiesQuery.where('category').equals(category._id);
+    storiesQuery.where('category').equals(filters.category);
+    countQuery.where('category').equals(filters.category);
+  }
+
+  if (filters.ownerId) {
+    storiesQuery.where('ownerId').equals(filters.ownerId);
+    countQuery.where('ownerId').equals(filters.ownerId);
   }
 
   storiesQuery.populate([
     { path: 'ownerId', select: 'name avatar description' },
     { path: 'category', select: 'name' },
   ]);
-
-  const countQuery = StoriesCollection.find();
-
-  if (filters.category) {
-    countQuery.where('category').equals(category._id);
-  }
 
   // execute both requests
   const [storiesCount, stories] = await Promise.all([
