@@ -11,7 +11,7 @@ export const getStoriesController = async (req, res) => {
     STORIES_SORT_FIELDS,
     STORIES_SORT_FIELDS[0],
   );
-  const filters = parseFilters(req.query);
+  const filters = await parseFilters(req.query);
 
   const data = await getStories(page, perPage, sortBy, sortOrder, filters);
 

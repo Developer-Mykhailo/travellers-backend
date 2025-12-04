@@ -1,3 +1,4 @@
+import { CategoryCollection } from '../db/models/category.js';
 import { StoriesCollection } from '../db/models/story.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
@@ -6,25 +7,26 @@ export const getStories = async (
   perPage = 10,
   sortBy,
   sortOrder,
-  filters = {},
+  filters,
 ) => {
   const skip = (page - 1) * perPage;
 
   const storiesQuery = StoriesCollection.find();
+  const category = await CategoryCollection.findOne({ _id: filters.category });
 
   if (filters.category) {
-    storiesQuery.where('category').equals(filters.category);
+    storiesQuery.where('category').equals(category._id);
   }
 
-  storiesQuery.populate({
-    path: 'ownerId',
-    select: 'name avatar description',
-  });
+  storiesQuery.populate([
+    { path: 'ownerId', select: 'name avatar description' },
+    { path: 'category', select: 'name' },
+  ]);
 
   const countQuery = StoriesCollection.find();
 
   if (filters.category) {
-    countQuery.where('category').equals(filters.category);
+    countQuery.where('category').equals(category._id);
   }
 
   // execute both requests

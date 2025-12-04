@@ -1,15 +1,18 @@
 import createHttpError from 'http-errors';
-import { STORY_CATEGORIES } from '../constants/validation.js';
+import { CategoryCollection } from '../db/models/category.js';
 
-const parseCategory = (category) => {
-  if (typeof category !== 'string') return;
-  const isCategory = (category) => STORY_CATEGORIES.includes(category);
+export const parseFilters = async ({ category }) => {
+  if (!category) return {};
 
-  if (isCategory(category)) return category;
-  else throw createHttpError(400, `Not found in this category: ${category}`);
-};
+  const decodedCategory = decodeURIComponent(category);
 
-export const parseFilters = ({ category }) => {
-  const parsedCategory = parseCategory(category);
-  return { category: parsedCategory };
+  const categoryDoc = await CategoryCollection.findOne({
+    name: decodedCategory,
+  });
+
+  if (!categoryDoc) {
+    throw createHttpError(400, `Category not found: ${category}`);
+  }
+
+  return { category: categoryDoc._id };
 };

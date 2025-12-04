@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { STORY_CATEGORIES } from '../../constants/validation.js';
+// import { STORY_CATEGORIES } from '../../constants/validation.js';
 // eslint-disable-next-line
 import { UserCollection } from './users.js';
 
@@ -15,8 +15,8 @@ const storySchema = new Schema(
       required: true,
     },
     category: {
-      type: String,
-      enum: STORY_CATEGORIES,
+      type: Schema.Types.ObjectId,
+      ref: 'categories',
       required: true,
     },
     ownerId: {
