@@ -15,36 +15,34 @@ export const getStories = async (
 ) => {
   const skip = (page - 1) * perPage;
 
-  const storiesQuery = StoriesCollection.find();
-  const countQuery = StoriesCollection.find();
+  const baseQuery = StoriesCollection.find();
 
   if (filters.category) {
-    storiesQuery.where('category').equals(filters.category);
-    countQuery.where('category').equals(filters.category);
+    baseQuery.where('category').equals(filters.category);
   }
 
   if (filters.owner) {
-    storiesQuery.where('owner').equals(filters.owner);
-    countQuery.where('owner').equals(filters.owner);
+    baseQuery.where('owner').equals(filters.owner);
   }
 
   if (filters.search) {
-    storiesQuery.where('article').regex(filters.search);
-    countQuery.where('article').regex(filters.search);
+    baseQuery.where('article').regex(filters.search);
   }
-
-  storiesQuery.populate([
-    { path: 'owner', select: 'name avatar description' },
-    { path: 'category', select: 'name' },
-  ]);
 
   // execute both requests
   const [storiesCount, stories] = await Promise.all([
-    countQuery.countDocuments(),
-    storiesQuery
+    baseQuery.clone().countDocuments().exec(),
+
+    baseQuery
+      .clone()
       .skip(skip)
       .limit(perPage)
-      .sort({ [sortBy]: sortOrder }),
+      .sort({ [sortBy]: sortOrder })
+      .populate([
+        { path: 'owner', select: 'name avatar description' },
+        { path: 'category', select: 'name' },
+      ])
+      .exec(),
   ]);
 
   const paginationData = calculatePaginationData(storiesCount, perPage, page);

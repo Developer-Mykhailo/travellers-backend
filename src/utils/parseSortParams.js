@@ -8,7 +8,7 @@ export const parseSortParams = (
   const parsedSortBy = sortFields.includes(sortBy) ? sortBy : dafaultSort;
   const parsedSortOrder = SORT_ORDER_LIST.includes(sortOrder)
     ? sortOrder
-    : SORT_ORDER_LIST[1];
+    : SORT_ORDER_LIST[0];
 
   return {
     sortBy: parsedSortBy,

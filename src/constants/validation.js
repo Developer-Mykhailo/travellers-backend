@@ -7,6 +7,6 @@ export const STORIES_SORT_FIELDS = [
   'ownerId',
 ];
 
-export const AUTHORS_SORT_FILEDS = ['name'];
+export const USERS_SORT_FILEDS = ['name'];
 
 export const SORT_ORDER_LIST = ['asc', 'desc'];
