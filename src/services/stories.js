@@ -57,20 +57,15 @@ export const addStory = async ({ title, article, category, owner, img }) => {
   if (!categoryDoc)
     throw createHttpError(400, `Category not found: ${category}`);
 
-  const newUser = await UserCollection.create({
-    name: owner,
-    email: 'test@test.com',
-    password: '123456',
-  });
+  const ownerDoc = await UserCollection.findById(owner._id);
 
-  // const ownerDoc = await UserCollection.findOne({ name: owner });
-  // if (!ownerDoc) throw createHttpError(400, `User not found: ${owner}`);
+  if (!ownerDoc) throw createHttpError(400, `User not found: ${owner._id}`);
 
   return StoriesCollection.create({
     title,
     article,
     img,
     category: categoryDoc._id,
-    owner: newUser,
+    owner: ownerDoc._id,
   });
 };

@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-// import { STORY_CATEGORIES } from '../../constants/validation.js';
 // eslint-disable-next-line
 import { UserCollection } from './users.js';
 
