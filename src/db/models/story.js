@@ -28,7 +28,7 @@ const storySchema = new Schema(
       type: String,
       default: () => {
         const now = new Date();
-        return now.toISOString.split('T')[0];
+        return now.toISOString().split('T')[0];
       },
     },
     favoriteCount: { type: Number },

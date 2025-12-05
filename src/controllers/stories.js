@@ -1,9 +1,11 @@
 import { STORIES_SORT_FIELDS } from '../constants/validation.js';
+import { addStory } from '../services/stories.js';
 import { getStories } from '../services/stories.js';
 import { parseFilters } from '../utils/parseFiltes.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 
+//!---------------------------------------------------------------
 export const getStoriesController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(
@@ -22,4 +24,13 @@ export const getStoriesController = async (req, res) => {
   });
 };
 
-//---------------------------------------------------------------
+//!---------------------------------------------------------------
+export const addStoryController = async (req, res) => {
+  const data = await addStory({ ...req.body });
+
+  res.status(201).json({
+    status: 201,
+    message: 'Story successfully created!',
+    data,
+  });
+};

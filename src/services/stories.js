@@ -1,4 +1,8 @@
+import createHttpError from 'http-errors';
+
+import { CategoryCollection } from '../db/models/category.js';
 import { StoriesCollection } from '../db/models/story.js';
+import { UserCollection } from '../db/models/users.js';
 
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
@@ -43,15 +47,32 @@ export const getStories = async (
       .sort({ [sortBy]: sortOrder }),
   ]);
 
-  //  form the final objects
-  // const modifiedStories = stories.map((story) => {
-  //   const obj = story.toObject();
-  //   obj.owner = obj.ownerId;
-  //   delete obj.ownerId;
-  //   return obj;
-  // });
-
   const paginationData = calculatePaginationData(storiesCount, perPage, page);
 
   return { data: stories, ...paginationData };
+};
+
+//!---------------------------------------------------------------
+export const addStory = async ({ title, article, category, owner, img }) => {
+  const categoryDoc = await CategoryCollection.findOne({ name: category });
+
+  if (!categoryDoc)
+    throw createHttpError(400, `Category not found: ${category}`);
+
+  const newUser = await UserCollection.create({
+    name: owner,
+    email: 'test@test.com',
+    password: '123456',
+  });
+
+  // const ownerDoc = await UserCollection.findOne({ name: owner });
+  // if (!ownerDoc) throw createHttpError(400, `User not found: ${owner}`);
+
+  return StoriesCollection.create({
+    title,
+    article,
+    img,
+    category: categoryDoc._id,
+    owner: newUser,
+  });
 };
