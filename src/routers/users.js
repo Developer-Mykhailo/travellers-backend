@@ -10,6 +10,6 @@ const userRouter = Router();
 
 userRouter.get('/', ctrlWrapper(getUsersController));
 
-userRouter.get('/:userId', isValidId, ctrlWrapper(getUserByIdController));
+userRouter.get('/:id', isValidId, ctrlWrapper(getUserByIdController));
 
 export default userRouter;

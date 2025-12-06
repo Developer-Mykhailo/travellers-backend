@@ -6,6 +6,7 @@ import { UserCollection } from '../db/models/users.js';
 
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
+//!---------------------------------------------------------------
 export const getStories = async (
   page = 1,
   perPage = 5,
@@ -48,6 +49,15 @@ export const getStories = async (
   const paginationData = calculatePaginationData(storiesCount, perPage, page);
 
   return { data: stories, ...paginationData };
+};
+
+//!---------------------------------------------------------------
+export const getStoryById = async (id) => {
+  const story = await StoriesCollection.findById(id);
+
+  if (!story) throw createHttpError(400, `Story not foud: ${id}`);
+
+  return story;
 };
 
 //!---------------------------------------------------------------

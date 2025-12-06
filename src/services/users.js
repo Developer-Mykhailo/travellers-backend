@@ -22,10 +22,10 @@ export const getAllUsers = async (page, perPage, sortBy, sortOrder) => {
 
 //!---------------------------------------------------------------
 
-export const getUserById = async (userId) => {
-  const user = await UserCollection.findById(userId);
+export const getUserById = async (id) => {
+  const user = await UserCollection.findById(id);
 
-  if (!user) throw createHttpError(400, `User not foud: ${userId}`);
+  if (!user) throw createHttpError(400, `User not foud: ${id}`);
 
   return user;
 };

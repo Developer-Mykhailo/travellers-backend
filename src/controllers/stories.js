@@ -1,5 +1,5 @@
 import { STORIES_SORT_FIELDS } from '../constants/validation.js';
-import { addStory } from '../services/stories.js';
+import { addStory, getStoryById } from '../services/stories.js';
 import { getStories } from '../services/stories.js';
 import { parseFilters } from '../utils/parseFiltes.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
@@ -22,6 +22,20 @@ export const getStoriesController = async (req, res) => {
     message: 'Successfully found stories!',
     data,
   });
+};
+
+//!---------------------------------------------------------------
+export const getStoryByIdController = async (req, res) => {
+  const { id } = req.params;
+
+  const data = await getStoryById(id);
+
+  res.json({
+    status: 200,
+    message: 'Successfully found story',
+    data,
+  });
+  //
 };
 
 //!---------------------------------------------------------------

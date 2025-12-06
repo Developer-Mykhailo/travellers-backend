@@ -19,9 +19,9 @@ export const getUsersController = async (req, res) => {
 //!---------------------------------------------------------------
 
 export const getUserByIdController = async (req, res) => {
-  const { userId } = req.params;
+  const { id } = req.params;
 
-  const data = await getUserById(userId);
+  const data = await getUserById(id);
 
   res.json({
     status: 200,
