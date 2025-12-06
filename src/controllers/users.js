@@ -1,5 +1,5 @@
 import { USERS_SORT_FILEDS } from '../constants/validation.js';
-import { getAllUsers } from '../services/users.js';
+import { getAllUsers, getUserById } from '../services/users.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 
@@ -12,6 +12,20 @@ export const getUsersController = async (req, res) => {
   res.json({
     status: 200,
     message: 'Users successfuly  found!',
+    data,
+  });
+};
+
+//!---------------------------------------------------------------
+
+export const getUserByIdController = async (req, res) => {
+  const { userId } = req.params;
+
+  const data = await getUserById(userId);
+
+  res.json({
+    status: 200,
+    message: '',
     data,
   });
 };

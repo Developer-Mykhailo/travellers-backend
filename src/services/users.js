@@ -4,12 +4,10 @@ import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 export const getAllUsers = async (page, perPage, sortBy, sortOrder) => {
   const skip = (page - 1) * perPage;
 
-  const usersQuery = UserCollection.find(); //an instance of a future request
-
   const [usersCount, users] = await Promise.all([
     UserCollection.find().countDocuments().exec(),
 
-    usersQuery
+    UserCollection.find()
       .skip(skip)
       .limit(perPage)
       .sort({ [sortBy]: sortOrder })
@@ -20,3 +18,13 @@ export const getAllUsers = async (page, perPage, sortBy, sortOrder) => {
 
   return { data: users, ...paginationData };
 };
+
+//!---------------------------------------------------------------
+
+export const getUserById = async (userId) => {
+  const user = await UserCollection.findById(userId);
+
+  return user;
+};
+
+//!---------------------------------------------------------------
