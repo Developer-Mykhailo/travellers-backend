@@ -3,11 +3,13 @@ import {
   getUserByIdController,
   getUsersController,
 } from '../controllers/users.js';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+import { isValidId } from '../middlewares/isValidId.js';
 
 const userRouter = Router();
 
-userRouter.get('/', getUsersController);
+userRouter.get('/', ctrlWrapper(getUsersController));
 
-userRouter.get('/:userId', getUserByIdController);
+userRouter.get('/:userId', isValidId, ctrlWrapper(getUserByIdController));
 
 export default userRouter;

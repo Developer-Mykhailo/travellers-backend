@@ -1,3 +1,4 @@
+import createHttpError from 'http-errors';
 import { UserCollection } from '../db/models/users.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
@@ -23,6 +24,8 @@ export const getAllUsers = async (page, perPage, sortBy, sortOrder) => {
 
 export const getUserById = async (userId) => {
   const user = await UserCollection.findById(userId);
+
+  if (!user) throw createHttpError(400, `User not foud: ${userId}`);
 
   return user;
 };
