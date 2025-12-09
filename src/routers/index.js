@@ -1,9 +1,12 @@
 import { Router } from 'express';
 
-import storyRouter from './stories.js';
+import authRouter from './auth.js';
 import userRouter from './users.js';
+import storyRouter from './stories.js';
 
 const router = Router();
+
+router.use('/auth', authRouter);
 
 router.use('/stories', storyRouter);
 
