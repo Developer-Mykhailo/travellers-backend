@@ -7,10 +7,10 @@ export const registerUserSchema = Joi.object({
   password: Joi.string().min(8).max(128).required(),
 });
 
-// export const loginUserSchema = Joi.object({
-//   email: Joi.string().pattern(emailRegexp).max(64).required(),
-//   password: Joi.string().min(8).max(128).required(),
-// });
+export const loginUserSchema = Joi.object({
+  email: Joi.string().pattern(emailRegexp).max(64).required(),
+  password: Joi.string().min(8).max(128).required(),
+});
 
 // export const requestResetEmailSchema = Joi.object({
 //   email: Joi.string().pattern(emailRegexp).max(64).required(),
