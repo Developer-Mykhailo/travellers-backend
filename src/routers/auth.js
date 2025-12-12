@@ -5,6 +5,7 @@ import { registerUserSchema, loginUserSchema } from '../validation/auth.js';
 import {
   registerUserController,
   loginUserController,
+  refreshSessionController,
 } from '../controllers/auth.js';
 
 const authRouter = Router();
@@ -16,5 +17,7 @@ authRouter.post(
 );
 
 authRouter.post('/login', validateBody(loginUserSchema), loginUserController);
+
+authRouter.post('/refresh', refreshSessionController);
 
 export default authRouter;

@@ -25,7 +25,7 @@ export const getUserByIdController = async (req, res) => {
 
   res.json({
     status: 200,
-    message: '',
+    message: 'User successfuly found!',
     data,
   });
 };
