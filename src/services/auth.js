@@ -16,9 +16,6 @@ const createSession = () => ({
   refreshTokenValidUntil: new Date(Date.now() + refreshTokenLifeTime),
 });
 
-// export const findSession = (query) => SessionsCollection.findOne(query);
-export const findUser = (query) => UserCollection.findOne(query);
-
 //!---------------------------------------------------------------
 export const registerUser = async (data) => {
   const { email, password } = data;

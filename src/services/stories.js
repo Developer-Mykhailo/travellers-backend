@@ -79,3 +79,8 @@ export const addStory = async ({ title, article, category, owner, img }) => {
     owner: ownerDoc._id,
   });
 };
+
+//!---------------------------------------------------------------
+export const deleteStory = async (_id, userId) => {
+  return await StoriesCollection.findOneAndDelete({ _id, owner: userId });
+};

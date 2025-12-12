@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import {
   addStoryController,
+  deleteStoryController,
   getStoriesController,
   getStoryByIdController,
 } from '../controllers/stories.js';
@@ -22,6 +23,13 @@ storyRouter.post(
   authenticate,
   validateBody(createStorySchema),
   ctrlWrapper(addStoryController),
+);
+
+storyRouter.delete(
+  '/:id',
+  authenticate,
+  isValidId,
+  ctrlWrapper(deleteStoryController),
 );
 
 export default storyRouter;
