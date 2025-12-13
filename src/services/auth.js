@@ -24,6 +24,7 @@ const createSession = () => ({
 });
 
 //!---------------------------------------------------------------
+
 export const registerUser = async (data) => {
   const { email, password } = data;
 
@@ -61,6 +62,7 @@ export const loginUser = async ({ email, password }) => {
 };
 
 //!---------------------------------------------------------------
+
 export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   const oldSession = await SessionsCollection.findOne({
     _id: sessionId,
@@ -88,7 +90,10 @@ export const requestResetToken = async (email) => {
   if (!user) throw createHttpError(404, 'User not found');
 
   const resetToken = jwt.sign(
-    { sub: user._id, email },
+    {
+      sub: user._id,
+      email,
+    },
     getEnvVar('JWT_SECRET'),
     { expiresIn: '15m' },
   );
@@ -115,4 +120,31 @@ export const requestResetToken = async (email) => {
     subject: 'Reset your password',
     html,
   });
+};
+
+//!---------------------------------------------------------------
+
+export const resetPassword = async (payload) => {
+  let entries;
+
+  try {
+    entries = jwt.verify(payload.token, getEnvVar('JWT_SECRET'));
+  } catch (err) {
+    if (err instanceof Error) throw createHttpError(401, err.message);
+    throw err;
+  }
+
+  const user = await UserCollection.findOne({
+    email: entries.email,
+    _id: entries.sub,
+  });
+
+  if (!user) throw createHttpError(404, 'User not found');
+
+  const encryptedPassword = await bcrypt.hash(payload.password, 10);
+
+  await UserCollection.updateOne(
+    { _id: user._id },
+    { password: encryptedPassword },
+  );
 };

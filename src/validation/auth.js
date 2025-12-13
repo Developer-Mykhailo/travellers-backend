@@ -14,13 +14,12 @@ export const loginUserSchema = Joi.object({
 
 export const requestResetEmailSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).max(64).required(),
-  // email: Joi.string().email().required(),
 });
 
-// export const resetPasswordSchema = Joi.object({
-//   password: Joi.string().min(8).max(128).required(),
-//   token: Joi.string().required(),
-// });
+export const resetPasswordSchema = Joi.object({
+  password: Joi.string().min(8).max(128).required(),
+  token: Joi.string().required(),
+});
 
 // export const loginWithGoogleOAuthSchema = Joi.object({
 //   code: Joi.string().required(),
