@@ -6,6 +6,8 @@ import { UserCollection } from '../db/models/users.js';
 
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 //!---------------------------------------------------------------
 export const getStories = async (
@@ -73,7 +75,13 @@ export const addStory = async (payload, photo) => {
   const ownerDoc = await UserCollection.findById(owner);
   if (!ownerDoc) throw createHttpError(400, `User not found: ${owner}`);
 
-  if (photo) photoUrl = await saveFileToUploadDir(photo);
+  if (photo) {
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
 
   return StoriesCollection.create({
     title,
