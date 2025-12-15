@@ -5,6 +5,7 @@ import { StoriesCollection } from '../db/models/story.js';
 import { UserCollection } from '../db/models/users.js';
 
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 //!---------------------------------------------------------------
 export const getStories = async (
@@ -61,22 +62,25 @@ export const getStoryById = async (id) => {
 };
 
 //!---------------------------------------------------------------
-export const addStory = async ({ title, article, category, owner, img }) => {
-  const categoryDoc = await CategoryCollection.findOne({ name: category });
+export const addStory = async (payload, photo) => {
+  const { title, article, category, owner } = payload;
+  let photoUrl = null;
 
+  const categoryDoc = await CategoryCollection.findOne({ name: category });
   if (!categoryDoc)
     throw createHttpError(400, `Category not found: ${category}`);
 
-  const ownerDoc = await UserCollection.findById(owner._id);
+  const ownerDoc = await UserCollection.findById(owner);
+  if (!ownerDoc) throw createHttpError(400, `User not found: ${owner}`);
 
-  if (!ownerDoc) throw createHttpError(400, `User not found: ${owner._id}`);
+  if (photo) photoUrl = await saveFileToUploadDir(photo);
 
   return StoriesCollection.create({
     title,
     article,
-    img,
     category: categoryDoc._id,
     owner: ownerDoc._id,
+    img: photoUrl,
   });
 };
 

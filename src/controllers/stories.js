@@ -41,7 +41,7 @@ export const getStoryByIdController = async (req, res) => {
 
 //!---------------------------------------------------------------
 export const addStoryController = async (req, res) => {
-  const data = await addStory({ ...req.body });
+  const data = await addStory({ ...req.body }, req.file);
 
   res.status(201).json({
     status: 201,
