@@ -1,6 +1,11 @@
 import createHttpError from 'http-errors';
 import { STORIES_SORT_FIELDS } from '../constants/validation.js';
-import { addStory, deleteStory, getStoryById } from '../services/stories.js';
+import {
+  addStory,
+  deleteStory,
+  getCategories,
+  getStoryById,
+} from '../services/stories.js';
 import { getStories } from '../services/stories.js';
 import { parseFilters } from '../utils/parseFiltes.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
@@ -60,4 +65,15 @@ export const deleteStoryController = async (req, res) => {
   if (!data) throw createHttpError('404', 'Story not found');
 
   res.status(204).send();
+};
+
+//!---------------------------------------------------------------
+export const getCategoriesController = async (req, res) => {
+  const data = await getCategories();
+
+  res.json({
+    status: 200,
+    message: 'Successfully found categories!',
+    data,
+  });
 };

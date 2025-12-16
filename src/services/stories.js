@@ -104,3 +104,11 @@ export const deleteStory = async (_id, userId) => {
 
   return await StoriesCollection.findOneAndDelete({ _id, owner: userId });
 };
+
+//!---------------------------------------------------------------
+
+export const getCategories = async () => {
+  const categories = await CategoryCollection.find();
+
+  return categories;
+};

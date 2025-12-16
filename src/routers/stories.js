@@ -3,6 +3,7 @@ import { Router } from 'express';
 import {
   addStoryController,
   deleteStoryController,
+  getCategoriesController,
   getStoriesController,
   getStoryByIdController,
 } from '../controllers/stories.js';
@@ -17,7 +18,7 @@ const storyRouter = Router();
 
 storyRouter.get('/', ctrlWrapper(getStoriesController));
 
-storyRouter.get('/:id', isValidId, ctrlWrapper(getStoryByIdController));
+storyRouter.get('/categories', ctrlWrapper(getCategoriesController));
 
 storyRouter.post(
   '/',
@@ -26,6 +27,8 @@ storyRouter.post(
   validateBody(createStorySchema),
   ctrlWrapper(addStoryController),
 );
+
+storyRouter.get('/:id', isValidId, ctrlWrapper(getStoryByIdController));
 
 storyRouter.delete(
   '/:id',
