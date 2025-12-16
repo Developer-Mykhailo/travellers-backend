@@ -7,7 +7,10 @@ import { UserCollection } from '../db/models/users.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
-import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import {
+  deleteFileFromCloudinary,
+  saveFileToCloudinary,
+} from '../utils/saveFileToCloudinary.js';
 
 //!---------------------------------------------------------------
 export const getStories = async (
@@ -22,15 +25,15 @@ export const getStories = async (
   const baseQuery = StoriesCollection.find();
 
   if (filters.category) {
-    baseQuery.where('category').equals(filters.category);
-  }
-
-  if (filters.owner) {
-    baseQuery.where('owner').equals(filters.owner);
+    baseQuery.where('category').in(filters.category);
   }
 
   if (filters.search) {
     baseQuery.where('article').regex(filters.search);
+  }
+
+  if (filters.owner) {
+    baseQuery.where('owner').in(filters.owner);
   }
 
   // execute both requests
@@ -46,6 +49,7 @@ export const getStories = async (
         { path: 'owner', select: 'name avatar description' },
         { path: 'category', select: 'name' },
       ])
+      .lean()
       .exec(),
   ]);
 
@@ -66,7 +70,7 @@ export const getStoryById = async (id) => {
 //!---------------------------------------------------------------
 export const addStory = async (payload, photo) => {
   const { title, article, category, owner } = payload;
-  let photoUrl = null;
+  let photoData = null;
 
   const categoryDoc = await CategoryCollection.findOne({ name: category });
   if (!categoryDoc)
@@ -77,9 +81,9 @@ export const addStory = async (payload, photo) => {
 
   if (photo) {
     if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
-      photoUrl = await saveFileToCloudinary(photo);
+      photoData = await saveFileToCloudinary(photo);
     } else {
-      photoUrl = await saveFileToUploadDir(photo);
+      photoData = await saveFileToUploadDir(photo);
     }
   }
 
@@ -88,11 +92,21 @@ export const addStory = async (payload, photo) => {
     article,
     category: categoryDoc._id,
     owner: ownerDoc._id,
-    img: photoUrl,
+    img: photoData,
   });
 };
 
 //!---------------------------------------------------------------
+
 export const deleteStory = async (_id, userId) => {
+  const story = await StoriesCollection.findOne({ _id, owner: userId });
+  if (!story) return null;
+
+  const { img: { publicId } = {} } = story;
+
+  if (publicId) {
+    await deleteFileFromCloudinary(publicId);
+  }
+
   return await StoriesCollection.findOneAndDelete({ _id, owner: userId });
 };

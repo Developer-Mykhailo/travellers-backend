@@ -11,11 +11,22 @@ cloudinary.v2.config({
   api_secret: getEnvVar(CLOUDINARY.API_SECRET),
 });
 
+//!---------------------------------------------------------------
 export const saveFileToCloudinary = async (file) => {
-  const response = await cloudinary.v2.uploader.upload(file.path, {
+  const result = await cloudinary.v2.uploader.upload(file.path, {
     folder: 'travellers-backend',
     use_filename: true,
   });
   await fs.unlink(file.path);
-  return response.secure_url;
+  return {
+    url: result.secure_url,
+    publicId: result.public_id,
+  };
+};
+
+//!---------------------------------------------------------------
+export const deleteFileFromCloudinary = async (publicId) => {
+  if (!publicId) return;
+
+  await cloudinary.v2.uploader.destroy(publicId);
 };

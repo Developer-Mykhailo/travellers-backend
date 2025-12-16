@@ -17,10 +17,12 @@ export const parseFilters = async ({ category, owner, query }) => {
 
   //todo owner
   if (owner) {
+    const ownerArray = Array.isArray(owner) ? owner : [owner];
+    const ownerRegex = new RegExp(ownerArray.join('|'), 'i');
     const users = await UserCollection.find({
       $or: [
-        { name: { $regex: owner, $options: 'i' } },
-        { description: { $regex: owner, $options: 'i' } },
+        { name: { $regex: ownerRegex } },
+        { description: { $regex: ownerRegex } },
       ],
     });
 

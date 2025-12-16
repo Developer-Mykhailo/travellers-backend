@@ -4,7 +4,11 @@ import { UserCollection } from './users.js';
 
 const storySchema = new Schema(
   {
-    img: { type: String },
+    img: {
+      type: Object,
+      url: String,
+      publicId: String,
+    },
     title: {
       type: String,
       required: true,
