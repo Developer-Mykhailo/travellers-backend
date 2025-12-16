@@ -1,10 +1,9 @@
 export const STORIES_SORT_FIELDS = [
-  'rate',
   'date',
   'title',
   'article',
   'favoriteCount',
-  'ownerId',
+  'owner',
 ];
 
 export const USERS_SORT_FILEDS = ['name'];

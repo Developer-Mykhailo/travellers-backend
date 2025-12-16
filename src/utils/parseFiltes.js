@@ -7,8 +7,12 @@ export const parseFilters = async ({ category, owner, query }) => {
 
   //todo category
   if (category) {
+    const categoryArray = Array.isArray(category) ? category : [category];
+    const categoryRegex = new RegExp(categoryArray.join('|'), 'i');
+
     const categories = await CategoryCollection.find({
-      name: { $regex: category, $options: 'i' },
+      // name: { $regex: category, $options: 'i' },
+      name: { $regex: categoryRegex },
     });
     if (categories.length === 0)
       throw createHttpError(400, `Category not found: ${category}`);
