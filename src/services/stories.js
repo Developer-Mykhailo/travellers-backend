@@ -13,13 +13,7 @@ import {
 } from '../utils/saveFileToCloudinary.js';
 
 //!---------------------------------------------------------------
-export const getStories = async (
-  page = 1,
-  perPage = 5,
-  sortBy,
-  sortOrder,
-  filters,
-) => {
+export const getStories = async (page, perPage, sortBy, sortOrder, filters) => {
   const skip = (page - 1) * perPage;
 
   const baseQuery = StoriesCollection.find();
