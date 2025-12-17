@@ -23,6 +23,7 @@ const userSchema = new Schema(
       type: String,
       default: '',
     },
+    savedStories: [],
   },
   { timestamps: true, versionKey: false },
 );

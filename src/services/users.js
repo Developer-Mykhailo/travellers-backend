@@ -1,6 +1,7 @@
 import createHttpError from 'http-errors';
 import { UserCollection } from '../db/models/users.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import { StoriesCollection } from '../db/models/story.js';
 
 export const getAllUsers = async (page, perPage, sortBy, sortOrder) => {
   const skip = (page - 1) * perPage;
@@ -31,3 +32,18 @@ export const getUserById = async (id) => {
 };
 
 //!---------------------------------------------------------------
+export const saveStoryById = async (userId, storyId) => {
+  const storyToSave = await StoriesCollection.findById(storyId);
+
+  if (!storyToSave) throw createHttpError(400, `Story not found: ${storyId}`);
+
+  const updatedUser = await UserCollection.findByIdAndUpdate(
+    userId,
+    { $addToSet: { savedStories: storyId } }, // only adds if not already
+    { new: true }, // returns an updated document
+  );
+
+  if (!updatedUser) throw createHttpError(400, `User not found: ${userId}`);
+
+  return updatedUser;
+};

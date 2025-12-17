@@ -1,5 +1,5 @@
 import { USERS_SORT_FILEDS } from '../constants/validation.js';
-import { getAllUsers, getUserById } from '../services/users.js';
+import { getAllUsers, getUserById, saveStoryById } from '../services/users.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 
@@ -11,13 +11,12 @@ export const getUsersController = async (req, res) => {
 
   res.json({
     status: 200,
-    message: 'Users successfuly  found!',
+    message: 'Users successfully  found!',
     data,
   });
 };
 
 //!---------------------------------------------------------------
-
 export const getUserByIdController = async (req, res) => {
   const { id } = req.params;
 
@@ -25,7 +24,22 @@ export const getUserByIdController = async (req, res) => {
 
   res.json({
     status: 200,
-    message: 'User successfuly found!',
+    message: 'User successfully found!',
+    data,
+  });
+};
+
+//!---------------------------------------------------------------
+
+export const saveStoryByIdController = async (req, res) => {
+  const userId = req.user._id;
+  const { id: storyId } = req.params;
+
+  const data = await saveStoryById(userId, storyId);
+
+  res.json({
+    status: 200,
+    message: 'The story has been successfully saved',
     data,
   });
 };
