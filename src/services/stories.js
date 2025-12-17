@@ -54,7 +54,7 @@ export const getStories = async (page, perPage, sortBy, sortOrder, filters) => {
 
 //!---------------------------------------------------------------
 export const getStoryById = async (id) => {
-  const story = await StoriesCollection.findById(id);
+  const story = await StoriesCollection.findById(id).lean();
 
   if (!story) throw createHttpError(400, `Story not foud: ${id}`);
 
@@ -62,15 +62,19 @@ export const getStoryById = async (id) => {
 };
 
 //!---------------------------------------------------------------
-export const addStory = async (payload, photo) => {
-  const { title, article, category, owner } = payload;
+export const addStory = async (payload, owner, photo) => {
+  const { title, article, category } = payload;
+
   let photoData = null;
 
-  const categoryDoc = await CategoryCollection.findOne({ name: category });
+  const categoryDoc = await CategoryCollection.findOne({
+    name: category,
+  }).lean();
+
   if (!categoryDoc)
     throw createHttpError(400, `Category not found: ${category}`);
 
-  const ownerDoc = await UserCollection.findById(owner);
+  const ownerDoc = await UserCollection.findById(owner).lean();
   if (!ownerDoc) throw createHttpError(400, `User not found: ${owner}`);
 
   if (photo) {
@@ -91,7 +95,49 @@ export const addStory = async (payload, photo) => {
 };
 
 //!---------------------------------------------------------------
+export const updateStory = async (userId, storyId, payload, photo) => {
+  const { title, article, category } = payload;
+  let photoData = null;
 
+  const categoryDoc = await CategoryCollection.findOne({
+    name: category,
+  }).lean();
+
+  if (!categoryDoc)
+    throw createHttpError(400, `Category not found: ${category}`);
+
+  const story = await StoriesCollection.findById(storyId).lean();
+  if (!story) throw createHttpError(404, 'Story not found');
+
+  if (story.owner.toString() !== userId.toString())
+    throw createHttpError(403, 'Prohibited');
+
+  if (photo) {
+    const { img: { publicId } = {} } = story;
+    if (publicId) await deleteFileFromCloudinary(publicId);
+
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+      photoData = await saveFileToCloudinary(photo);
+    } else {
+      photoData = await saveFileToUploadDir(photo);
+    }
+  }
+
+  const updateStory = await StoriesCollection.findByIdAndUpdate(
+    storyId,
+    {
+      title,
+      article,
+      category: categoryDoc._id,
+      img: photoData,
+    },
+    { new: true, runValidators: true },
+  ).lean();
+
+  return updateStory;
+};
+
+//!---------------------------------------------------------------
 export const deleteStory = async (_id, userId) => {
   const story = await StoriesCollection.findOne({ _id, owner: userId });
   if (!story) return null;
@@ -102,11 +148,13 @@ export const deleteStory = async (_id, userId) => {
     await deleteFileFromCloudinary(publicId);
   }
 
-  return await StoriesCollection.findOneAndDelete({ _id, owner: userId });
+  return await StoriesCollection.findOneAndDelete({
+    _id,
+    owner: userId,
+  }).lean();
 };
 
 //!---------------------------------------------------------------
-
 export const getCategories = async () => {
   const categories = await CategoryCollection.find();
 

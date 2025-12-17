@@ -6,6 +6,7 @@ import {
   getCategoriesController,
   getStoriesController,
   getStoryByIdController,
+  updateStoryContoroller,
 } from '../controllers/stories.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { isValidId } from '../middlewares/isValidId.js';
@@ -35,6 +36,15 @@ storyRouter.delete(
   authenticate,
   isValidId,
   ctrlWrapper(deleteStoryController),
+);
+
+storyRouter.patch(
+  '/update-story/:id',
+  authenticate,
+  isValidId,
+  upload.single('photo'),
+  validateBody(createStorySchema),
+  ctrlWrapper(updateStoryContoroller),
 );
 
 export default storyRouter;

@@ -5,6 +5,7 @@ import {
   deleteStory,
   getCategories,
   getStoryById,
+  updateStory,
 } from '../services/stories.js';
 import { getStories } from '../services/stories.js';
 import { parseFilters } from '../utils/parseFiltes.js';
@@ -46,7 +47,9 @@ export const getStoryByIdController = async (req, res) => {
 
 //!---------------------------------------------------------------
 export const addStoryController = async (req, res) => {
-  const data = await addStory({ ...req.body }, req.file);
+  const userId = req.user._id;
+
+  const data = await addStory({ ...req.body }, userId, req.file);
 
   res.status(201).json({
     status: 201,
@@ -75,5 +78,21 @@ export const getCategoriesController = async (req, res) => {
     status: 200,
     message: 'Successfully found categories!',
     data,
+  });
+};
+
+//!---------------------------------------------------------------
+export const updateStoryContoroller = async (req, res) => {
+  const userId = req.user._id;
+  const { id: storyId } = req.params;
+  const payload = req.body;
+  const photo = req.file;
+
+  const newStory = await updateStory(userId, storyId, payload, photo);
+
+  res.json({
+    status: 200,
+    message: 'The story has been updated successfully!',
+    data: newStory,
   });
 };
