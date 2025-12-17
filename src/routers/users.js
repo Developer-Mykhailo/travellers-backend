@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
   getUserByIdController,
   getUsersController,
-  saveStoryByIdController,
+  toggleSavedStoryController,
 } from '../controllers/users.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { isValidId } from '../middlewares/isValidId.js';
@@ -14,11 +14,11 @@ userRouter.get('/', ctrlWrapper(getUsersController));
 
 userRouter.get('/:id', isValidId, ctrlWrapper(getUserByIdController));
 
-userRouter.post(
-  '/save-story/:id',
+userRouter.patch(
+  '/toggle-save-story/:id',
   authenticate,
   isValidId,
-  ctrlWrapper(saveStoryByIdController),
+  ctrlWrapper(toggleSavedStoryController),
 );
 
 export default userRouter;

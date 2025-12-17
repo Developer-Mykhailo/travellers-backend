@@ -32,18 +32,24 @@ export const getUserById = async (id) => {
 };
 
 //!---------------------------------------------------------------
-export const saveStoryById = async (userId, storyId) => {
-  const storyToSave = await StoriesCollection.findById(storyId);
+export const toggleSavedStory = async (storyId, userId) => {
+  const story = await StoriesCollection.findById(storyId);
+  if (!story) throw createHttpError(400, `Story not found: ${storyId}`);
 
-  if (!storyToSave) throw createHttpError(400, `Story not found: ${storyId}`);
+  const user = await UserCollection.findById(userId);
+  const isSaved = user.savedStories.includes(storyId);
 
-  const updatedUser = await UserCollection.findByIdAndUpdate(
-    userId,
-    { $addToSet: { savedStories: storyId } }, // only adds if not already
-    { new: true }, // returns an updated document
-  );
-
-  if (!updatedUser) throw createHttpError(400, `User not found: ${userId}`);
-
-  return updatedUser;
+  if (isSaved) {
+    return await UserCollection.findByIdAndUpdate(
+      userId,
+      { $pull: { savedStories: storyId } },
+      { new: true },
+    );
+  } else {
+    return await UserCollection.findByIdAndUpdate(
+      userId,
+      { $addToSet: { savedStories: storyId } },
+      { new: true },
+    );
+  }
 };
