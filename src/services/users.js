@@ -7,13 +7,12 @@ export const getAllUsers = async (page, perPage, sortBy, sortOrder) => {
   const skip = (page - 1) * perPage;
 
   const [usersCount, users] = await Promise.all([
-    UserCollection.find().countDocuments().exec(),
+    UserCollection.countDocuments(),
 
     UserCollection.find()
       .skip(skip)
       .limit(perPage)
-      .sort({ [sortBy]: sortOrder })
-      .exec(),
+      .sort({ [sortBy]: sortOrder }),
   ]);
 
   const paginationData = calculatePaginationData(usersCount, perPage, page);
@@ -24,7 +23,7 @@ export const getAllUsers = async (page, perPage, sortBy, sortOrder) => {
 //!---------------------------------------------------------------
 
 export const getUserById = async (id) => {
-  const user = await UserCollection.findById(id);
+  const user = await UserCollection.findById(id).lean();
 
   if (!user) throw createHttpError(400, `User not foud: ${id}`);
 
@@ -33,10 +32,10 @@ export const getUserById = async (id) => {
 
 //!---------------------------------------------------------------
 export const toggleSavedStory = async (storyId, userId) => {
-  const story = await StoriesCollection.findById(storyId);
+  const story = await StoriesCollection.findById(storyId).lean();
   if (!story) throw createHttpError(400, `Story not found: ${storyId}`);
 
-  const user = await UserCollection.findById(userId);
+  const user = await UserCollection.findById(userId).lean();
   const isSaved = user.savedStories.includes(storyId);
 
   if (isSaved) {
@@ -44,12 +43,12 @@ export const toggleSavedStory = async (storyId, userId) => {
       userId,
       { $pull: { savedStories: storyId } },
       { new: true },
-    );
+    ).lean();
   } else {
     return await UserCollection.findByIdAndUpdate(
       userId,
       { $addToSet: { savedStories: storyId } },
       { new: true },
-    );
+    ).lean();
   }
 };

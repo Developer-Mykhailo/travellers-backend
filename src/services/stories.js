@@ -32,7 +32,7 @@ export const getStories = async (page, perPage, sortBy, sortOrder, filters) => {
 
   // execute both requests
   const [storiesCount, stories] = await Promise.all([
-    baseQuery.clone().countDocuments().exec(),
+    baseQuery.clone().countDocuments(),
 
     baseQuery
       .clone()
@@ -43,8 +43,7 @@ export const getStories = async (page, perPage, sortBy, sortOrder, filters) => {
         { path: 'owner', select: 'name avatar description' },
         { path: 'category', select: 'name' },
       ])
-      .lean()
-      .exec(),
+      .lean(),
   ]);
 
   const paginationData = calculatePaginationData(storiesCount, perPage, page);
@@ -139,7 +138,7 @@ export const updateStory = async (userId, storyId, payload, photo) => {
 
 //!---------------------------------------------------------------
 export const deleteStory = async (_id, userId) => {
-  const story = await StoriesCollection.findOne({ _id, owner: userId });
+  const story = await StoriesCollection.findOne({ _id, owner: userId }).lean();
   if (!story) return null;
 
   const { img: { publicId } = {} } = story;
@@ -156,7 +155,7 @@ export const deleteStory = async (_id, userId) => {
 
 //!---------------------------------------------------------------
 export const getCategories = async () => {
-  const categories = await CategoryCollection.find();
+  const categories = await CategoryCollection.find().lean();
 
   return categories;
 };

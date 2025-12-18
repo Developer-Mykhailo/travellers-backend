@@ -28,7 +28,7 @@ const createSession = () => ({
 export const registerUser = async (data) => {
   const { email, password } = data;
 
-  const user = await UserCollection.findOne({ email });
+  const user = await UserCollection.findOne({ email }).lean();
   if (user) throw createHttpError(409, 'Email already in use');
 
   const hashPassword = await bcrypt.hash(password, 10);
@@ -47,13 +47,13 @@ export const registerUser = async (data) => {
 //!---------------------------------------------------------------
 
 export const loginUser = async ({ email, password }) => {
-  const user = await UserCollection.findOne({ email });
+  const user = await UserCollection.findOne({ email }).lean();
   if (!user) throw createHttpError(401, 'User not found!');
 
   const isEqual = await bcrypt.compare(password, user.password);
   if (!isEqual) throw createHttpError(401, 'Unauthorized');
 
-  await SessionsCollection.deleteOne({ userId: user._id });
+  await SessionsCollection.deleteOne({ userId: user._id }).lean();
 
   return await SessionsCollection.create({
     userId: user._id,
@@ -67,14 +67,14 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   const oldSession = await SessionsCollection.findOne({
     _id: sessionId,
     refreshToken,
-  });
+  }).lean();
 
   if (!oldSession) throw createHttpError(401, 'Session not found!');
 
   if (oldSession.refreshTokenValidUntil < new Date())
     throw createHttpError(401, 'Session token expired');
 
-  await SessionsCollection.findByIdAndDelete(oldSession._id);
+  await SessionsCollection.findByIdAndDelete(oldSession._id).lean();
 
   return await SessionsCollection.create({
     userId: oldSession.userId,
@@ -85,7 +85,7 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
 //!---------------------------------------------------------------
 
 export const requestResetToken = async (email) => {
-  const user = await UserCollection.findOne({ email });
+  const user = await UserCollection.findOne({ email }).lean();
 
   if (!user) throw createHttpError(404, 'User not found');
 
@@ -137,7 +137,7 @@ export const resetPassword = async (payload) => {
   const user = await UserCollection.findOne({
     email: entries.email,
     _id: entries.sub,
-  });
+  }).lean();
 
   if (!user) throw createHttpError(404, 'User not found');
 
@@ -146,5 +146,5 @@ export const resetPassword = async (payload) => {
   await UserCollection.updateOne(
     { _id: user._id },
     { password: encryptedPassword },
-  );
+  ).lean();
 };
