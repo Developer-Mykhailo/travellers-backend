@@ -148,3 +148,7 @@ export const resetPassword = async (payload) => {
     { password: encryptedPassword },
   ).lean();
 };
+
+export const logoutUser = async (sessionId) => {
+  await SessionsCollection.deleteOne({ _id: sessionId });
+};

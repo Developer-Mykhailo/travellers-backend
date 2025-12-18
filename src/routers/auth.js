@@ -13,6 +13,7 @@ import {
   refreshSessionController,
   requestResetEmailController,
   resetPasswordController,
+  logoutUserController,
 } from '../controllers/auth.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
@@ -39,5 +40,7 @@ authRouter.post(
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
 );
+
+authRouter.post('/logout', ctrlWrapper(logoutUserController));
 
 export default authRouter;

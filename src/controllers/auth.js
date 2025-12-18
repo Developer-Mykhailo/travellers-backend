@@ -1,5 +1,6 @@
 import {
   loginUser,
+  logoutUser,
   refreshUsersSession,
   registerUser,
   requestResetToken,
@@ -83,4 +84,15 @@ export const resetPasswordController = async (req, res) => {
     status: 200,
     data: {},
   });
+};
+
+export const logoutUserController = async (req, res) => {
+  if (req.cookies.sessionId) {
+    await logoutUser(req.cookies.sessionId);
+  }
+
+  res.clearCookie('sessionId');
+  res.clearCookie('refreshToken');
+
+  res.status(204).send();
 };
