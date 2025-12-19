@@ -18,16 +18,34 @@ export const getStories = async (page, perPage, sortBy, sortOrder, filters) => {
 
   const baseQuery = StoriesCollection.find();
 
-  if (filters.category) {
-    baseQuery.where('category').in(filters.category);
+  if (filters.categoryRegex) {
+    const categories = await CategoryCollection.find({
+      name: { $regex: filters.categoryRegex },
+    })
+      .select('_id')
+      .lean();
+
+    baseQuery.where('category').in(categories.map((cat) => cat._id));
   }
 
   if (filters.search) {
     baseQuery.where('article').regex(filters.search);
   }
 
-  if (filters.owner) {
-    baseQuery.where('owner').in(filters.owner);
+  if (filters.ownerRegex) {
+    const owner = await UserCollection.find({
+      $or: [
+        { name: { $regex: filters.ownerRegex } },
+        { description: { $regex: filters.ownerRegex } },
+      ],
+    })
+      .select('_id')
+      .lean();
+
+    if (owner.length === 0)
+      throw createHttpError(400, `Owner not foud: ${filters.ownerRegex}`);
+
+    baseQuery.where('owner').in(owner.map((u) => u._id));
   }
 
   // execute both requests

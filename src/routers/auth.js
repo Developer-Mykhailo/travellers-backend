@@ -25,12 +25,16 @@ const authRouter = Router();
 authRouter.post(
   '/register',
   validateBody(registerUserSchema),
-  registerUserController,
+  ctrlWrapper(registerUserController),
 );
 
-authRouter.post('/login', validateBody(loginUserSchema), loginUserController);
+authRouter.post(
+  '/login',
+  validateBody(loginUserSchema),
+  ctrlWrapper(loginUserController),
+);
 
-authRouter.post('/refresh', refreshSessionController);
+authRouter.post('/refresh', ctrlWrapper(refreshSessionController));
 
 authRouter.post(
   '/request-reset-email',

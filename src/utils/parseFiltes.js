@@ -1,44 +1,27 @@
-import createHttpError from 'http-errors';
-import { CategoryCollection } from '../db/models/category.js';
-import { UserCollection } from '../db/models/users.js';
-
-export const parseFilters = async ({ category, owner, query }) => {
+export const parseFilters = async ({ category, owner, query, name }) => {
   const result = {};
 
   //todo category
   if (category) {
     const categoryArray = Array.isArray(category) ? category : [category];
-    const categoryRegex = new RegExp(categoryArray.join('|'), 'i');
-
-    const categories = await CategoryCollection.find({
-      // name: { $regex: category, $options: 'i' },
-      name: { $regex: categoryRegex },
-    });
-    if (categories.length === 0)
-      throw createHttpError(400, `Category not found: ${category}`);
-    result.category = categories.map((cat) => cat._id);
+    result.categoryRegex = new RegExp(categoryArray.join('|'), 'i');
   }
 
   //todo owner
   if (owner) {
     const ownerArray = Array.isArray(owner) ? owner : [owner];
-    const ownerRegex = new RegExp(ownerArray.join('|'), 'i');
-    const users = await UserCollection.find({
-      $or: [
-        { name: { $regex: ownerRegex } },
-        { description: { $regex: ownerRegex } },
-      ],
-    });
-
-    if (users.length === 0)
-      throw createHttpError(400, `User not found: ${owner}`);
-
-    result.owner = users.map((u) => u._id);
+    result.ownerRegex = new RegExp(ownerArray.join('|'), 'i');
   }
 
-  //todo
+  //todo search
   if (query) {
     result.search = new RegExp(query, 'i');
+  }
+
+  //todo users
+  if (name) {
+    const nameArray = Array.isArray(name) ? name : [name];
+    result.nameRegex = new RegExp(nameArray.join('|'), 'i');
   }
 
   return result;

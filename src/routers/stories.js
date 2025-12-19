@@ -17,9 +17,11 @@ import { upload } from '../middlewares/multer.js';
 
 const storyRouter = Router();
 
+storyRouter.get('/categories', ctrlWrapper(getCategoriesController));
+
 storyRouter.get('/', ctrlWrapper(getStoriesController));
 
-storyRouter.get('/categories', ctrlWrapper(getCategoriesController));
+storyRouter.get('/:id', isValidId, ctrlWrapper(getStoryByIdController));
 
 storyRouter.post(
   '/',
@@ -28,8 +30,6 @@ storyRouter.post(
   validateBody(createStorySchema),
   ctrlWrapper(addStoryController),
 );
-
-storyRouter.get('/:id', isValidId, ctrlWrapper(getStoryByIdController));
 
 storyRouter.delete(
   '/:id',

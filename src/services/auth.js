@@ -49,7 +49,6 @@ export const registerUser = async (data) => {
 };
 
 //!---------------------------------------------------------------
-
 export const loginUser = async ({ email, password }) => {
   const user = await UserCollection.findOne({ email }).lean();
   if (!user) throw createHttpError(401, 'User not found!');
@@ -66,7 +65,6 @@ export const loginUser = async ({ email, password }) => {
 };
 
 //!---------------------------------------------------------------
-
 export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   const oldSession = await SessionsCollection.findOne({
     _id: sessionId,
@@ -87,7 +85,6 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
 };
 
 //!---------------------------------------------------------------
-
 export const requestResetToken = async (email) => {
   const user = await UserCollection.findOne({ email }).lean();
 
@@ -127,7 +124,6 @@ export const requestResetToken = async (email) => {
 };
 
 //!---------------------------------------------------------------
-
 export const resetPassword = async (payload) => {
   let entries;
 
@@ -153,6 +149,7 @@ export const resetPassword = async (payload) => {
   ).lean();
 };
 
+//!---------------------------------------------------------------
 export const logoutUser = async (sessionId) => {
   await SessionsCollection.deleteOne({ _id: sessionId });
 };

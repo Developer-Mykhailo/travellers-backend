@@ -3,16 +3,30 @@ import { UserCollection } from '../db/models/users.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { StoriesCollection } from '../db/models/story.js';
 
-export const getAllUsers = async (page, perPage, sortBy, sortOrder) => {
+export const getAllUsers = async (
+  page,
+  perPage,
+  sortBy,
+  sortOrder,
+  filters,
+) => {
   const skip = (page - 1) * perPage;
 
-  const [usersCount, users] = await Promise.all([
-    UserCollection.countDocuments(),
+  const baseQuery = UserCollection.find();
 
-    UserCollection.find()
+  if (filters.nameRegex) {
+    baseQuery.where('name').regex(filters.nameRegex);
+  }
+
+  const [usersCount, users] = await Promise.all([
+    baseQuery.clone().countDocuments(),
+
+    baseQuery
+      .clone()
       .skip(skip)
       .limit(perPage)
-      .sort({ [sortBy]: sortOrder }),
+      .sort({ [sortBy]: sortOrder })
+      .lean(),
   ]);
 
   const paginationData = calculatePaginationData(usersCount, perPage, page);
