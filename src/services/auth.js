@@ -15,6 +15,10 @@ import { UserCollection } from '../db/models/users.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
 import { sendEmail } from '../utils/sendMail.js';
 import { SMTP, TEMPLATES_DIR } from '../constants/index.js';
+import {
+  getFullNameFromGoogleTokenPayload,
+  validateCode,
+} from '../utils/googleOAuth2.js';
 
 const createSession = () => ({
   accessToken: randomBytes(30).toString('base64'),
@@ -151,4 +155,28 @@ export const resetPassword = async (payload) => {
 
 export const logoutUser = async (sessionId) => {
   await SessionsCollection.deleteOne({ _id: sessionId });
+};
+
+//!---------------------------------------------------------------
+export const loginOrSignupWithGoogle = async (code) => {
+  const loginTicket = await validateCode(code);
+  const payload = loginTicket.getPayload();
+  if (!payload) throw createHttpError(401);
+
+  let user = await UserCollection.findOne({ email: payload.email }).lean();
+
+  if (!user) {
+    const password = await bcrypt.hash(randomBytes(10), 10);
+
+    user = await UserCollection.create({
+      email: payload.email,
+      name: getFullNameFromGoogleTokenPayload(payload),
+      password,
+    });
+  }
+
+  return await SessionsCollection.create({
+    userId: user._id,
+    ...createSession(),
+  });
 };
