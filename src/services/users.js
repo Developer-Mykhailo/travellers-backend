@@ -3,6 +3,7 @@ import { UserCollection } from '../db/models/users.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { StoriesCollection } from '../db/models/story.js';
 
+//!---------------------------------------------------------------
 export const getAllUsers = async (
   page,
   perPage,
@@ -35,7 +36,6 @@ export const getAllUsers = async (
 };
 
 //!---------------------------------------------------------------
-
 export const getUserById = async (id) => {
   const user = await UserCollection.findById(id).lean();
 

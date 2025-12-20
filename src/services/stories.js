@@ -113,40 +113,41 @@ export const addStory = async (payload, owner, photo) => {
 
 //!---------------------------------------------------------------
 export const updateStory = async (userId, storyId, payload, photo) => {
-  const { title, article, category } = payload;
-  let photoData = null;
-
-  const categoryDoc = await CategoryCollection.findOne({
-    name: category,
-  }).lean();
-
-  if (!categoryDoc)
-    throw createHttpError(400, `Category not found: ${category}`);
-
+  //
   const story = await StoriesCollection.findById(storyId).lean();
   if (!story) throw createHttpError(404, 'Story not found');
 
   if (story.owner.toString() !== userId.toString())
     throw createHttpError(403, 'Prohibited');
 
+  if (payload.category) {
+    const categoryDoc = await CategoryCollection.findOne({
+      name: payload.category,
+    }).lean();
+
+    if (!categoryDoc)
+      throw createHttpError(400, `Category not found: ${payload.category}`);
+
+    story.category = categoryDoc;
+  }
+
   if (photo) {
     const { img: { publicId } = {} } = story;
     if (publicId) await deleteFileFromCloudinary(publicId);
 
     if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
-      photoData = await saveFileToCloudinary(photo);
+      story.img = await saveFileToCloudinary(photo);
     } else {
-      photoData = await saveFileToUploadDir(photo);
+      await saveFileToUploadDir(photo);
     }
   }
 
   const updateStory = await StoriesCollection.findByIdAndUpdate(
     storyId,
     {
-      title,
-      article,
-      category: categoryDoc._id,
-      img: photoData,
+      ...payload,
+      category: story.category,
+      img: story.img,
     },
     { new: true, runValidators: true },
   ).lean();

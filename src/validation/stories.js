@@ -6,9 +6,8 @@ export const createStorySchema = Joi.object({
   category: Joi.string().min(3).required(),
 });
 
-// export const updateStoriesSchema = Joi.object({
-//   title: Joi.string().min(3).max(128),
-//   article: Joi.string().allow(''),
-//   fullText: Joi.string().allow(''),
-//   category: Joi.string().valid(...STORIES_SORT_FIELDS),
-// });
+export const updateStoriesSchema = Joi.object({
+  title: Joi.string().min(3).max(128),
+  article: Joi.string().allow(''),
+  category: Joi.string().min(3),
+});
