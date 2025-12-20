@@ -15,7 +15,8 @@ export const parseFilters = async ({ category, owner, query, name }) => {
 
   //todo search
   if (query) {
-    result.search = new RegExp(query, 'i');
+    const queryArray = Array.isArray(query) ? query : [query];
+    result.queryRegex = new RegExp(queryArray.join('|'), 'i');
   }
 
   //todo users

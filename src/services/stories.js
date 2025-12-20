@@ -28,10 +28,17 @@ export const getStories = async (page, perPage, sortBy, sortOrder, filters) => {
     baseQuery.where('category').in(categories.map((cat) => cat._id));
   }
 
-  if (filters.search) {
-    baseQuery.where('article').regex(filters.search);
+  //---------------------------------------------------------------
+  if (filters.queryRegex) {
+    baseQuery.where({
+      $or: [
+        { title: { $regex: filters.queryRegex } },
+        { article: { $regex: filters.queryRegex } },
+      ],
+    });
   }
 
+  //---------------------------------------------------------------
   if (filters.ownerRegex) {
     const owner = await UserCollection.find({
       $or: [
