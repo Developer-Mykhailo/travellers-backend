@@ -4,6 +4,7 @@ import {
   getUserById,
   getUserProfileById,
   toggleSavedStory,
+  uploadAvatar,
 } from '../services/users.js';
 import { parseFilters } from '../utils/parseFiltes.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
@@ -64,5 +65,19 @@ export const toggleSavedStoryController = async (req, res) => {
     status: 200,
     message: `Story ${storyId} was successfully ${state}`,
     data: result,
+  });
+};
+
+//!---------------------------------------------------------------
+export const uploadAvatarController = async (req, res) => {
+  const { _id } = req.user;
+  const avatar = req.file;
+
+  const data = await uploadAvatar(_id, avatar);
+
+  res.json({
+    status: 200,
+    message: 'Avatar successfully uploaded!',
+    data,
   });
 };

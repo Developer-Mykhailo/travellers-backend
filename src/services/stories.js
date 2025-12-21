@@ -100,7 +100,7 @@ export const addStory = async (payload, userId, photo) => {
 
   if (photo) {
     if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
-      photoData = await saveFileToCloudinary(photo);
+      photoData = await saveFileToCloudinary(photo, 'stories');
     } else {
       photoData = await saveFileToUploadDir(photo);
     }
@@ -146,7 +146,7 @@ export const updateStory = async (userId, storyId, payload, photo) => {
     if (publicId) await deleteFileFromCloudinary(publicId);
 
     if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
-      story.img = await saveFileToCloudinary(photo);
+      story.img = await saveFileToCloudinary(photo, 'stories');
     } else {
       await saveFileToUploadDir(photo);
     }
@@ -169,8 +169,6 @@ export const updateStory = async (userId, storyId, payload, photo) => {
 export const deleteStory = async (_id, userId) => {
   const story = await StoriesCollection.findOne({ _id, owner: userId }).lean();
   if (!story) return null;
-
-  console.log(typeof _id);
 
   const { img: { publicId } = {} } = story;
 

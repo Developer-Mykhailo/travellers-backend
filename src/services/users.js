@@ -2,6 +2,9 @@ import createHttpError from 'http-errors';
 import { UserCollection } from '../db/models/users.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { Types } from 'mongoose';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
 
 //!---------------------------------------------------------------
 export const getAllUsers = async (
@@ -67,8 +70,6 @@ export const toggleSavedStory = async (storyId, userId) => {
     { $pull: { savedStories: storyObjectId } },
   );
 
-  console.log(pullResult);
-
   if (pullResult.modifiedCount > 0) {
     return { saved: false };
   }
@@ -79,4 +80,27 @@ export const toggleSavedStory = async (storyId, userId) => {
   );
 
   return { saved: true };
+};
+
+//!---------------------------------------------------------------
+export const uploadAvatar = async (_id, avatar) => {
+  let photoData = null;
+
+  if (avatar) {
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+      photoData = await saveFileToCloudinary(avatar, 'avatars');
+    } else {
+      photoData = await saveFileToUploadDir(avatar);
+    }
+  }
+
+  const updatedUser = await UserCollection.findByIdAndUpdate(
+    _id,
+    {
+      avatar: photoData,
+    },
+    { new: true, runValidators: true },
+  ).lean();
+
+  return updatedUser;
 };

@@ -16,8 +16,9 @@ const userSchema = new Schema(
       required: true,
     },
     avatar: {
-      type: String,
-      default: '',
+      type: Object,
+      url: String,
+      publicId: String,
     },
     description: {
       type: String,

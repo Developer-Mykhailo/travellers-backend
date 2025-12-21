@@ -4,10 +4,12 @@ import {
   getUserProfileByIdController,
   getUsersController,
   toggleSavedStoryController,
+  uploadAvatarController,
 } from '../controllers/users.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { authenticate } from '../middlewares/authenticate.js';
+import { upload } from '../middlewares/multer.js';
 
 const userRouter = Router();
 
@@ -27,6 +29,13 @@ userRouter.patch(
   authenticate,
   isValidId,
   ctrlWrapper(toggleSavedStoryController),
+);
+
+userRouter.post(
+  '/upload-avatar',
+  authenticate,
+  upload.single('avatar'),
+  ctrlWrapper(uploadAvatarController),
 );
 
 export default userRouter;

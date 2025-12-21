@@ -12,9 +12,12 @@ cloudinary.v2.config({
 });
 
 //!---------------------------------------------------------------
-export const saveFileToCloudinary = async (file) => {
+export const saveFileToCloudinary = async (file, avatarFolder) => {
   const result = await cloudinary.v2.uploader.upload(file.path, {
-    folder: 'travellers-backend',
+    folder:
+      avatarFolder === 'avatars'
+        ? 'travellers-backend/avatars'
+        : 'travellers-backend/stories',
     use_filename: true,
   });
   await fs.unlink(file.path);
