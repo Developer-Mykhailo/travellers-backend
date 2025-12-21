@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  deleteAvatarController,
   getUserByIdController,
   getUserProfileByIdController,
   getUsersController,
@@ -36,6 +37,12 @@ userRouter.post(
   authenticate,
   upload.single('avatar'),
   ctrlWrapper(uploadAvatarController),
+);
+
+userRouter.delete(
+  '/delete-avatar',
+  authenticate,
+  ctrlWrapper(deleteAvatarController),
 );
 
 export default userRouter;

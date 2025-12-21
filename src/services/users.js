@@ -2,7 +2,10 @@ import createHttpError from 'http-errors';
 import { UserCollection } from '../db/models/users.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { Types } from 'mongoose';
-import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import {
+  deleteFileFromCloudinary,
+  saveFileToCloudinary,
+} from '../utils/saveFileToCloudinary.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
 
@@ -103,4 +106,24 @@ export const uploadAvatar = async (_id, avatar) => {
   ).lean();
 
   return updatedUser;
+};
+
+//!---------------------------------------------------------------
+export const deleteAvatar = async (_id) => {
+  //
+  const user = await UserCollection.findById(_id).lean();
+
+  if (!user?.avatar?.publicId) return null;
+
+  const publicId = user.avatar.publicId;
+
+  await deleteFileFromCloudinary(publicId);
+
+  await UserCollection.findByIdAndUpdate(
+    _id,
+    { avatar: {} },
+    { runValidators: true },
+  ).lean();
+
+  return publicId;
 };

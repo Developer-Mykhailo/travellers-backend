@@ -1,5 +1,6 @@
 import { USERS_SORT_FILEDS } from '../constants/validation.js';
 import {
+  deleteAvatar,
   getAllUsers,
   getUserById,
   getUserProfileById,
@@ -78,6 +79,19 @@ export const uploadAvatarController = async (req, res) => {
   res.json({
     status: 200,
     message: 'Avatar successfully uploaded!',
+    data,
+  });
+};
+
+//!---------------------------------------------------------------
+export const deleteAvatarController = async (req, res) => {
+  const { _id } = req.user;
+
+  const data = await deleteAvatar(_id);
+
+  res.json({
+    ststus: 200,
+    message: 'Avatar was successfully deleted!',
     data,
   });
 };
