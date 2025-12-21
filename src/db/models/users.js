@@ -23,7 +23,18 @@ const userSchema = new Schema(
       type: String,
       default: '',
     },
-    savedStories: [],
+    savedStories: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'stories',
+      },
+    ],
+    publicStories: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'stories',
+      },
+    ],
   },
   { timestamps: true, versionKey: false },
 );

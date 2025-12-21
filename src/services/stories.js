@@ -86,7 +86,7 @@ export const getStoryById = async (id) => {
 };
 
 //!---------------------------------------------------------------
-export const addStory = async (payload, owner, photo) => {
+export const addStory = async (payload, userId, photo) => {
   const { title, article, category } = payload;
 
   let photoData = null;
@@ -98,9 +98,6 @@ export const addStory = async (payload, owner, photo) => {
   if (!categoryDoc)
     throw createHttpError(400, `Category not found: ${category}`);
 
-  const ownerDoc = await UserCollection.findById(owner).lean();
-  if (!ownerDoc) throw createHttpError(400, `User not found: ${owner}`);
-
   if (photo) {
     if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
       photoData = await saveFileToCloudinary(photo);
@@ -109,13 +106,19 @@ export const addStory = async (payload, owner, photo) => {
     }
   }
 
-  return StoriesCollection.create({
+  const newStory = await StoriesCollection.create({
     title,
     article,
     category: categoryDoc._id,
-    owner: ownerDoc._id,
+    owner: userId,
     img: photoData,
   });
+
+  await UserCollection.findByIdAndUpdate(userId, {
+    $addToSet: { publicStories: newStory._id },
+  }).lean();
+
+  return newStory;
 };
 
 //!---------------------------------------------------------------
@@ -167,16 +170,21 @@ export const deleteStory = async (_id, userId) => {
   const story = await StoriesCollection.findOne({ _id, owner: userId }).lean();
   if (!story) return null;
 
+  console.log(typeof _id);
+
   const { img: { publicId } = {} } = story;
 
   if (publicId) {
     await deleteFileFromCloudinary(publicId);
   }
 
-  return await StoriesCollection.findOneAndDelete({
-    _id,
-    owner: userId,
-  }).lean();
+  await UserCollection.findByIdAndUpdate(
+    userId,
+    { $pull: { publicStories: _id } },
+    { new: true },
+  );
+
+  return await StoriesCollection.deleteOne({ _id, owner: userId });
 };
 
 //!---------------------------------------------------------------

@@ -1,7 +1,7 @@
 import createHttpError from 'http-errors';
 import { UserCollection } from '../db/models/users.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
-import { StoriesCollection } from '../db/models/story.js';
+import { Types } from 'mongoose';
 
 //!---------------------------------------------------------------
 export const getAllUsers = async (
@@ -41,28 +41,42 @@ export const getUserById = async (id) => {
 
   if (!user) throw createHttpError(400, `User not foud: ${id}`);
 
+  return {
+    name: user.name,
+    avatar: user.avatar,
+    description: user.description,
+    publicStories: user.publicStories,
+  };
+};
+
+//!---------------------------------------------------------------
+export const getUserProfileById = async (id) => {
+  const user = await UserCollection.findById(id).lean();
+
+  if (!user) throw createHttpError(400, `User not foud: ${id}`);
+
   return user;
 };
 
 //!---------------------------------------------------------------
 export const toggleSavedStory = async (storyId, userId) => {
-  const story = await StoriesCollection.findById(storyId).lean();
-  if (!story) throw createHttpError(400, `Story not found: ${storyId}`);
+  const storyObjectId = new Types.ObjectId(storyId);
 
-  const user = await UserCollection.findById(userId).lean();
-  const isSaved = user.savedStories.includes(storyId);
+  const pullResult = await UserCollection.updateOne(
+    { _id: userId, savedStories: storyObjectId },
+    { $pull: { savedStories: storyObjectId } },
+  );
 
-  if (isSaved) {
-    return await UserCollection.findByIdAndUpdate(
-      userId,
-      { $pull: { savedStories: storyId } },
-      { new: true },
-    ).lean();
-  } else {
-    return await UserCollection.findByIdAndUpdate(
-      userId,
-      { $addToSet: { savedStories: storyId } },
-      { new: true },
-    ).lean();
+  console.log(pullResult);
+
+  if (pullResult.modifiedCount > 0) {
+    return { saved: false };
   }
+
+  await UserCollection.updateOne(
+    { _id: userId },
+    { $addToSet: { savedStories: storyObjectId } },
+  );
+
+  return { saved: true };
 };

@@ -2,6 +2,7 @@ import { USERS_SORT_FILEDS } from '../constants/validation.js';
 import {
   getAllUsers,
   getUserById,
+  getUserProfileById,
   toggleSavedStory,
 } from '../services/users.js';
 import { parseFilters } from '../utils/parseFiltes.js';
@@ -38,15 +39,30 @@ export const getUserByIdController = async (req, res) => {
 };
 
 //!---------------------------------------------------------------
+export const getUserProfileByIdController = async (req, res) => {
+  const { id } = req.params;
+
+  const data = await getUserProfileById(id);
+
+  res.json({
+    status: 200,
+    message: 'User successfully found!',
+    data,
+  });
+};
+
+//!---------------------------------------------------------------
 export const toggleSavedStoryController = async (req, res) => {
   const { id: storyId } = req.params;
   const userId = req.user._id;
 
-  const updatedUser = await toggleSavedStory(storyId, userId);
+  const result = await toggleSavedStory(storyId, userId);
+
+  let state = result.saved === false ? 'deleted' : 'added';
 
   res.json({
     status: 200,
-    message: `Story was successfully deleted ${storyId}`,
-    data: updatedUser,
+    message: `Story ${storyId} was successfully ${state}`,
+    data: result,
   });
 };

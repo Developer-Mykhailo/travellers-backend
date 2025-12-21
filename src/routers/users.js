@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   getUserByIdController,
+  getUserProfileByIdController,
   getUsersController,
   toggleSavedStoryController,
 } from '../controllers/users.js';
@@ -13,6 +14,13 @@ const userRouter = Router();
 userRouter.get('/', ctrlWrapper(getUsersController));
 
 userRouter.get('/:id', isValidId, ctrlWrapper(getUserByIdController));
+
+userRouter.get(
+  '/profile/:id',
+  isValidId,
+  authenticate,
+  ctrlWrapper(getUserProfileByIdController),
+);
 
 userRouter.patch(
   '/toggle-save-story/:id',
