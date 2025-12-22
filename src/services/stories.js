@@ -168,7 +168,7 @@ export const updateStory = async (userId, storyId, payload, photo) => {
 //!---------------------------------------------------------------
 export const deleteStory = async (_id, userId) => {
   const story = await StoriesCollection.findOne({ _id, owner: userId }).lean();
-  if (!story) return null;
+  if (!story) throw createHttpError(404, 'Story not found');
 
   const { img: { publicId } = {} } = story;
 

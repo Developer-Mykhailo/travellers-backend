@@ -1,4 +1,3 @@
-import createHttpError from 'http-errors';
 import { STORIES_SORT_FIELDS } from '../constants/validation.js';
 import {
   addStory,
@@ -63,9 +62,7 @@ export const deleteStoryController = async (req, res) => {
   const { id } = req.params;
   const userId = req.user._id;
 
-  const data = await deleteStory(id, userId);
-
-  if (!data) throw createHttpError('404', 'Story not found');
+  await deleteStory(id, userId);
 
   res.status(204).send();
 };
