@@ -22,7 +22,7 @@ const userSchema = new Schema(
     },
     description: {
       type: String,
-      default: '',
+      default: 'Hello everyone, I am happy to share my stories.',
     },
     savedStories: [
       {

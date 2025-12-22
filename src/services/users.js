@@ -127,3 +127,14 @@ export const deleteAvatar = async (_id) => {
 
   return publicId;
 };
+
+//!---------------------------------------------------------------
+export const updateUserInfo = async (_id, description) => {
+  const updatedUser = await UserCollection.findByIdAndUpdate(
+    _id,
+    { description },
+    { new: true },
+  );
+
+  return updatedUser;
+};

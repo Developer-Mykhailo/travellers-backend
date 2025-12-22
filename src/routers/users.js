@@ -5,12 +5,15 @@ import {
   getUserProfileByIdController,
   getUsersController,
   toggleSavedStoryController,
+  updateUserInfoController,
   uploadAvatarController,
 } from '../controllers/users.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { upload } from '../middlewares/multer.js';
+import { validateBody } from '../middlewares/validateBody.js';
+import { createUserSchema } from '../validation/users.js';
 
 const userRouter = Router();
 
@@ -43,6 +46,13 @@ userRouter.delete(
   '/delete-avatar',
   authenticate,
   ctrlWrapper(deleteAvatarController),
+);
+
+userRouter.post(
+  '/update-info',
+  authenticate,
+  validateBody(createUserSchema),
+  ctrlWrapper(updateUserInfoController),
 );
 
 export default userRouter;

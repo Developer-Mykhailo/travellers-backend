@@ -5,6 +5,7 @@ import {
   getUserById,
   getUserProfileById,
   toggleSavedStory,
+  updateUserInfo,
   uploadAvatar,
 } from '../services/users.js';
 import { parseFilters } from '../utils/parseFiltes.js';
@@ -92,6 +93,20 @@ export const deleteAvatarController = async (req, res) => {
   res.json({
     ststus: 200,
     message: 'Avatar was successfully deleted!',
+    data,
+  });
+};
+
+//!---------------------------------------------------------------
+export const updateUserInfoController = async (req, res) => {
+  const { _id } = req.user;
+  const { description } = req.body;
+
+  const data = await updateUserInfo(_id, description);
+
+  res.json({
+    status: 200,
+    message: 'Successfully updated',
     data,
   });
 };
