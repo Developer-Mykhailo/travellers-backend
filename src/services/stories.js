@@ -123,12 +123,12 @@ export const addStory = async (payload, userId, photo) => {
 
 //!---------------------------------------------------------------
 export const updateStory = async (userId, storyId, payload, photo) => {
-  //
-  const story = await StoriesCollection.findById(storyId).lean();
-  if (!story) throw createHttpError(404, 'Story not found');
+  const story = await StoriesCollection.findOne({
+    _id: storyId,
+    owner: userId,
+  }).lean();
 
-  if (!story.owner.equals(userId))
-    throw createHttpError(403, 'You are not the owner');
+  if (!story) throw createHttpError(404, 'Story not found');
 
   if (payload.category) {
     const categoryDoc = await CategoryCollection.findOne({
@@ -152,7 +152,7 @@ export const updateStory = async (userId, storyId, payload, photo) => {
     }
   }
 
-  const updateStory = await StoriesCollection.findByIdAndUpdate(
+  const updatedStory = await StoriesCollection.findByIdAndUpdate(
     storyId,
     {
       ...payload,
@@ -162,7 +162,7 @@ export const updateStory = async (userId, storyId, payload, photo) => {
     { new: true, runValidators: true },
   ).lean();
 
-  return updateStory;
+  return updatedStory;
 };
 
 //!---------------------------------------------------------------
