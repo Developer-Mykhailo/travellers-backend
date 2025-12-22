@@ -127,8 +127,8 @@ export const updateStory = async (userId, storyId, payload, photo) => {
   const story = await StoriesCollection.findById(storyId).lean();
   if (!story) throw createHttpError(404, 'Story not found');
 
-  if (story.owner.toString() !== userId.toString())
-    throw createHttpError(403, 'Prohibited');
+  if (!story.owner.equals(userId))
+    throw createHttpError(403, 'You are not the owner');
 
   if (payload.category) {
     const categoryDoc = await CategoryCollection.findOne({
