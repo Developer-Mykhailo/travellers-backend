@@ -13,6 +13,13 @@ import {
 } from '../utils/saveFileToCloudinary.js';
 
 //!---------------------------------------------------------------
+export const getCategories = async () => {
+  const categories = await CategoryCollection.find().lean();
+
+  return categories;
+};
+
+//!---------------------------------------------------------------
 export const getStories = async (page, perPage, sortBy, sortOrder, filters) => {
   const skip = (page - 1) * perPage;
 
@@ -183,11 +190,4 @@ export const deleteStory = async (_id, userId) => {
   );
 
   return await StoriesCollection.deleteOne({ _id, owner: userId });
-};
-
-//!---------------------------------------------------------------
-export const getCategories = async () => {
-  const categories = await CategoryCollection.find().lean();
-
-  return categories;
 };

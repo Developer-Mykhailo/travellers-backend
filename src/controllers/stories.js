@@ -12,6 +12,17 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 
 //!---------------------------------------------------------------
+export const getCategoriesController = async (req, res) => {
+  const data = await getCategories();
+
+  res.json({
+    status: 200,
+    message: 'Successfully found categories!',
+    data,
+  });
+};
+
+//!---------------------------------------------------------------
 export const getStoriesController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(
@@ -58,27 +69,6 @@ export const addStoryController = async (req, res) => {
 };
 
 //!---------------------------------------------------------------
-export const deleteStoryController = async (req, res) => {
-  const { id } = req.params;
-  const userId = req.user._id;
-
-  await deleteStory(id, userId);
-
-  res.status(204).send();
-};
-
-//!---------------------------------------------------------------
-export const getCategoriesController = async (req, res) => {
-  const data = await getCategories();
-
-  res.json({
-    status: 200,
-    message: 'Successfully found categories!',
-    data,
-  });
-};
-
-//!---------------------------------------------------------------
 export const updateStoryContoroller = async (req, res) => {
   const userId = req.user._id;
   const { id: storyId } = req.params;
@@ -92,4 +82,14 @@ export const updateStoryContoroller = async (req, res) => {
     message: 'The story has been updated successfully!',
     data: newStory,
   });
+};
+
+//!---------------------------------------------------------------
+export const deleteStoryController = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user._id;
+
+  await deleteStory(id, userId);
+
+  res.status(204).send();
 };
