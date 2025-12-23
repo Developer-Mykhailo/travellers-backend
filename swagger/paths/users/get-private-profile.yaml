@@ -1,0 +1,22 @@
+tags:
+  - Users
+summary: Get user by id
+operationId: getUserProfileById
+description: Retrieve user profile information by user ID
+security:
+  - bearerAuth: []
+parameters:
+  - name: id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: '6948bfc885ec4f21d2b61c84'
+    description: User ID to retrieve profile
+responses:
+  '200':
+    description: Users successfully found
+    $ref: ../../components/responses/200.yaml
+
+  '401':
+    $ref: ../../components/responses/401.yaml

@@ -1,0 +1,15 @@
+description: User successfully found
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: 'User successfully found!'
+        data:
+          type: object
+          $ref: ../schemas/user.yaml

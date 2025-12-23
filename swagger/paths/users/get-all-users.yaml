@@ -1,0 +1,65 @@
+tags:
+  - Users
+summary: Get all users
+operationId: getUsers
+description: Public endpoint to get list of users with pagination, sorting and filtering
+security: []
+parameters:
+  - in: query
+    name: sortBy
+    schema:
+      type: string
+      example: name
+  - in: query
+    name: sortOrder
+    schema:
+      type: string
+      enum: [asc, desc]
+      example: desc
+  - in: query
+    name: name
+    schema:
+      type: string
+      example: Mykhailo
+responses:
+  200:
+    description: Users successfully found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+            message:
+              type: string
+            data:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                page:
+                  type: integer
+                perPage:
+                  type: integer
+                totalItems:
+                  type: integer
+                totalPages:
+                  type: integer
+                hasNextPage:
+                  type: boolean
+                hasPreviousPage:
+                  type: boolean
+  404:
+    description: 'Route not found'
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              description: 'Response message indicating the error.'
+              type: string
+              example: 'NotFoundError'

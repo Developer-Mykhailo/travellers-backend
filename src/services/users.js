@@ -32,8 +32,7 @@ export const getAllUsers = async (
       .clone()
       .skip(skip)
       .limit(perPage)
-      .sort({ [sortBy]: sortOrder })
-      .lean(),
+      .sort({ [sortBy]: sortOrder }),
   ]);
 
   const paginationData = calculatePaginationData(usersCount, perPage, page);
@@ -43,7 +42,7 @@ export const getAllUsers = async (
 
 //!---------------------------------------------------------------
 export const getUserById = async (id) => {
-  const user = await UserCollection.findById(id).lean();
+  const user = await UserCollection.findById(id);
 
   if (!user) throw createHttpError(400, `User not foud: ${id}`);
 
@@ -57,7 +56,7 @@ export const getUserById = async (id) => {
 
 //!---------------------------------------------------------------
 export const getUserProfileById = async (id) => {
-  const user = await UserCollection.findById(id).lean();
+  const user = await UserCollection.findById(id);
 
   if (!user) throw createHttpError(400, `User not foud: ${id}`);
 
@@ -103,14 +102,13 @@ export const uploadAvatar = async (_id, avatar) => {
       avatar: photoData,
     },
     { new: true, runValidators: true },
-  ).lean();
+  );
 
-  return updatedUser;
+  return updatedUser.avatar;
 };
 
 //!---------------------------------------------------------------
 export const deleteAvatar = async (_id) => {
-  //
   const user = await UserCollection.findById(_id).lean();
 
   if (!user?.avatar?.publicId) return null;
