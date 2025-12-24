@@ -23,6 +23,10 @@
     {
       "name": "Users",
       "description": "Operations about users."
+    },
+    {
+      "name": "Auth",
+      "description": "Auth operations."
     }
   ],
   "paths": {
@@ -38,10 +42,29 @@
         "parameters": [
           {
             "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "perPage",
+            "schema": {
+              "type": "integer",
+              "example": 10
+            }
+          },
+          {
+            "in": "query",
             "name": "sortBy",
             "schema": {
               "type": "string",
-              "example": "name"
+              "enum": [
+                "name",
+                "publicStories"
+              ]
             }
           },
           {
@@ -52,16 +75,22 @@
               "enum": [
                 "asc",
                 "desc"
-              ],
-              "example": "desc"
+              ]
             }
           },
           {
             "in": "query",
             "name": "name",
+            "description": "You can put in several",
             "schema": {
-              "type": "string",
-              "example": "Mykhailo"
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "Романенко",
+                "Mykhailo"
+              ]
             }
           }
         ],

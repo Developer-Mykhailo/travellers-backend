@@ -6,6 +6,6 @@ export const STORIES_SORT_FIELDS = [
   'owner',
 ];
 
-export const USERS_SORT_FILEDS = ['name'];
+export const USERS_SORT_FILEDS = ['name', 'publicStories'];
 
 export const SORT_ORDER_LIST = ['asc', 'desc'];

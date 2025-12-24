@@ -6,21 +6,31 @@ description: Public endpoint to get list of users with pagination, sorting and f
 security: []
 parameters:
   - in: query
+    name: page
+    schema:
+      type: integer
+      example: 1
+  - in: query
+    name: perPage
+    schema:
+      type: integer
+      example: 10
+  - in: query
     name: sortBy
     schema:
       type: string
-      example: name
+      enum: [name, publicStories]
   - in: query
     name: sortOrder
     schema:
       type: string
       enum: [asc, desc]
-      example: desc
   - in: query
     name: name
+    description: 'You can put in several'
     schema:
-      type: string
-      example: Mykhailo
+      { type: array, items: { type: string }, example: [Романенко, Mykhailo] }
+
 responses:
   200:
     description: Users successfully found

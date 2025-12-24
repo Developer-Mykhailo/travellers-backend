@@ -19,7 +19,9 @@ export const getAllUsers = async (
 ) => {
   const skip = (page - 1) * perPage;
 
-  const baseQuery = UserCollection.find();
+  const baseQuery = UserCollection.find().select(
+    'avatar name description publicStories',
+  );
 
   if (filters.nameRegex) {
     baseQuery.where('name').regex(filters.nameRegex);
