@@ -4,6 +4,7 @@ summary: Get all users
 operationId: getUsers
 description: Public endpoint to get list of users with pagination, sorting and filtering
 security: []
+
 parameters:
   - in: query
     name: page
@@ -62,14 +63,6 @@ responses:
                   type: boolean
                 hasPreviousPage:
                   type: boolean
+
   404:
-    description: 'Route not found'
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            message:
-              description: 'Response message indicating the error.'
-              type: string
-              example: 'NotFoundError'
+    $ref: ../../components/responses/errors.yaml#/NotFound

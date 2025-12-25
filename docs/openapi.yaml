@@ -34,6 +34,11 @@ paths:
   /api/users/upload-avatar:
     post:
       $ref: ../swagger/paths/users/upload-avatar.yaml
+
+  /api/users/delete-avatar:
+    delete:
+      $ref: ../swagger/paths/users/delete-avatar.yaml
+
 components:
   securitySchemes:
     bearerAuth:

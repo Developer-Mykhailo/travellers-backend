@@ -1,20 +1,20 @@
 tags:
   - Users
-summary: Save / Unsave story
-operationId: save/unsaveStory
-description: Save or unsave a story to a collection by ID
+summary: Toggle saved story for user
+operationId: toggleSavedStory
+description: Add or remove a story from the user's saved stories list
 
 parameters:
   - in: path
     name: id
     required: true
+    description: ID of the story to toggle in saved stories
     schema:
       type: string
-    description: Story id
 
 responses:
   200:
-    description: Save / Unsave Story
+    description: Story successfully added or deleted from saved list
     content:
       application/json:
         schema:
