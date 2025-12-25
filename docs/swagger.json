@@ -357,6 +357,69 @@
               }
             }
           },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/users/toggle-save-story/{id}": {
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Save/Unsave story",
+        "operationId": "saveStory",
+        "description": "Save or unsave a story from a collection by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Story id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Story successfully saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Story 68498236a100312bea079029 was successfully added / deleted"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "saved"
+                      ],
+                      "properties": {
+                        "saved": {
+                          "type": "string",
+                          "example": "true / false"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
@@ -391,6 +454,7 @@
                 },
                 "data": {
                   "type": "object",
+                  "description": "list of possible errors",
                   "properties": {
                     "message": {
                       "type": "array",
@@ -431,6 +495,7 @@
                 },
                 "data": {
                   "type": "object",
+                  "description": "list of possible errors",
                   "properties": {
                     "message": {
                       "type": "array",

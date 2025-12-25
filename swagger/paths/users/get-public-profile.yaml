@@ -2,7 +2,7 @@ tags:
   - Users
 summary: Get public user profile
 operationId: getPublicUserProfile
-description: Get user profile
+description: Get user profile by ID
 security: []
 parameters:
   - in: path

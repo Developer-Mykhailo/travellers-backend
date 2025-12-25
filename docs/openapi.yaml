@@ -24,6 +24,9 @@ paths:
   /api/users/public/{id}:
     get:
       $ref: ../swagger/paths/users/get-public-profile.yaml
+  /api/users/toggle-save-story/{id}:
+    patch:
+      $ref: ../swagger/paths/users/patch-saved-story.yaml
 components:
   securitySchemes:
     bearerAuth:

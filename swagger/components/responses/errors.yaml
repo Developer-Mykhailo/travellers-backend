@@ -39,6 +39,7 @@ Unauthorized: #401
             description: Error definition
           data:
             type: object
+            description: list of possible errors
             properties:
               message:
                 type: array
@@ -67,6 +68,7 @@ NotFound: #404
             type: string
           data:
             type: object
+            description: list of possible errors
             properties:
               message:
                 type: array
