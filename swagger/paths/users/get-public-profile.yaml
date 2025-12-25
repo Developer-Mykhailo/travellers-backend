@@ -54,8 +54,5 @@ responses:
                     - 694a8c750cbe696229c7bb24
                     - 694b2b4039f9981db9f960d2
 
-  401:
-    $ref: ../../components/responses/errors.yaml#/Unauthorized
-
   404:
     $ref: ../../components/responses/errors.yaml#/NotFound
