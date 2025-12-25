@@ -83,3 +83,23 @@ NotFound: #404
             - 'Route not found'
             - 'User not found'
             - 'Story not found'
+
+InternalServerError: #500
+  description: Internal server error
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          status:
+            type: integer
+          message:
+            type: string
+            description: General error message
+          data:
+            type: string
+            description: Error details
+      example:
+        status: 500
+        message: Something went wrong
+        data: Unexpected field

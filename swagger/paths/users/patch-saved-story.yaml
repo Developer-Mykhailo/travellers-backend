@@ -3,6 +3,7 @@ tags:
 summary: Save / Unsave story
 operationId: save/unsaveStory
 description: Save or unsave a story to a collection by ID
+
 parameters:
   - in: path
     name: id
@@ -10,6 +11,7 @@ parameters:
     schema:
       type: string
     description: Story id
+
 responses:
   200:
     description: Save / Unsave Story

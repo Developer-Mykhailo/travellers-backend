@@ -75,12 +75,14 @@ export const uploadAvatarController = async (req, res) => {
   const { _id } = req.user;
   const avatar = req.file;
 
-  const data = await uploadAvatar(_id, avatar);
+  const uploadedAvatar = await uploadAvatar(_id, avatar);
 
   res.json({
     status: 200,
     message: 'Avatar successfully uploaded!',
-    data,
+    data: {
+      url: uploadedAvatar.url,
+    },
   });
 };
 
@@ -88,12 +90,15 @@ export const uploadAvatarController = async (req, res) => {
 export const deleteAvatarController = async (req, res) => {
   const { _id } = req.user;
 
+  // eslint-disable-next-line
   const data = await deleteAvatar(_id);
 
   res.json({
-    ststus: 200,
+    status: 200,
     message: 'Avatar was successfully deleted!',
-    data,
+    data: {
+      avatar: null,
+    },
   });
 };
 

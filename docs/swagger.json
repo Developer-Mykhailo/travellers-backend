@@ -170,11 +170,6 @@
         "summary": "Get private user profile",
         "operationId": "getPrivateUserProfile",
         "description": "Get full user profile including saved and public stories",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
         "parameters": [
           {
             "in": "path",
@@ -287,7 +282,7 @@
         ],
         "summary": "Get public user profile",
         "operationId": "getPublicUserProfile",
-        "description": "Get user profile",
+        "description": "Get user profile by ID",
         "security": [],
         "parameters": [
           {
@@ -368,9 +363,9 @@
         "tags": [
           "Users"
         ],
-        "summary": "Save/Unsave story",
-        "operationId": "saveStory",
-        "description": "Save or unsave a story from a collection by ID",
+        "summary": "Save / Unsave story",
+        "operationId": "save/unsaveStory",
+        "description": "Save or unsave a story to a collection by ID",
         "parameters": [
           {
             "in": "path",
@@ -384,7 +379,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Story successfully saved",
+            "description": "Save / Unsave Story",
             "content": {
               "application/json": {
                 "schema": {
@@ -425,6 +420,84 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/users/upload-avatar": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Upload user avatar",
+        "operationId": "uploadUserAvatar",
+        "description": "Upload user avatar using multipart/form-data",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "avatar"
+                ],
+                "properties": {
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Avatar successfully uploaded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 201
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Avatar successfully uploaded!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "url"
+                      ],
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -517,6 +590,34 @@
                   "Story not found"
                 ]
               }
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "General error message"
+                },
+                "data": {
+                  "type": "string",
+                  "description": "Error details"
+                }
+              }
+            },
+            "example": {
+              "status": 500,
+              "message": "Something went wrong",
+              "data": "Unexpected field"
             }
           }
         }

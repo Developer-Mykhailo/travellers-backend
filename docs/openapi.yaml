@@ -18,15 +18,22 @@ paths:
   /api/users:
     get:
       $ref: ../swagger/paths/users/get-all-users.yaml
+
   /api/users/profile/{id}:
     get:
       $ref: ../swagger/paths/users/get-private-profile.yaml
+
   /api/users/public/{id}:
     get:
       $ref: ../swagger/paths/users/get-public-profile.yaml
+
   /api/users/toggle-save-story/{id}:
     patch:
       $ref: ../swagger/paths/users/patch-saved-story.yaml
+
+  /api/users/upload-avatar:
+    post:
+      $ref: ../swagger/paths/users/upload-avatar.yaml
 components:
   securitySchemes:
     bearerAuth:

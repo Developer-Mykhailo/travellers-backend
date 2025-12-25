@@ -4,12 +4,14 @@ summary: Get public user profile
 operationId: getPublicUserProfile
 description: Get user profile by ID
 security: []
+
 parameters:
   - in: path
     name: id
     required: true
     schema:
       type: string
+
 responses:
   200:
     description: User successfully found
