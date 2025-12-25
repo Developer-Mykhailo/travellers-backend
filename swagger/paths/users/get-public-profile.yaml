@@ -1,0 +1,61 @@
+tags:
+  - Users
+summary: Get public user profile
+operationId: getPublicUserProfile
+description: Get user profile
+security: []
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+responses:
+  200:
+    description: User successfully found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: User successfully found!
+            data:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: User Name
+
+                avatar:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                      format: uri
+                      example: https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png
+                    publicId:
+                      type: string
+                      example: travellers-backend/avatars/1766493124483_195615627_yfgkmc
+
+                description:
+                  type: string
+                  example: Hello everyone, I am happy to share my stories.
+
+                publicStories:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - 694a8c750cbe696229c7bb24
+                    - 694b2b4039f9981db9f960d2
+
+  401:
+    $ref: ../../components/responses/errors.yaml#/Unauthorized
+
+  404:
+    $ref: ../../components/responses/errors.yaml#/NotFound

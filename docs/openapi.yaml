@@ -21,6 +21,9 @@ paths:
   /api/users/profile/{id}:
     get:
       $ref: ../swagger/paths/users/get-private-profile.yaml
+  /api/users/public/{id}:
+    get:
+      $ref: ../swagger/paths/users/get-public-profile.yaml
 components:
   securitySchemes:
     bearerAuth:

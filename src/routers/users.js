@@ -19,7 +19,7 @@ const userRouter = Router();
 
 userRouter.get('/', ctrlWrapper(getUsersController));
 
-userRouter.get('/:id', isValidId, ctrlWrapper(getUserByIdController));
+userRouter.get('/public/:id', isValidId, ctrlWrapper(getUserByIdController));
 
 userRouter.get(
   '/profile/:id',
