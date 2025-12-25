@@ -18,9 +18,9 @@ paths:
   /api/users:
     get:
       $ref: ../swagger/paths/users/get-all-users.yaml
-  # /users/{id}:
-  #   get:
-  #     $ref: ../swagger/
+  /api/users/profile/{id}:
+    get:
+      $ref: ../swagger/paths/users/get-private-profile.yaml
 components:
   securitySchemes:
     bearerAuth:

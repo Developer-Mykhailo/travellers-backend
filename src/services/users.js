@@ -58,7 +58,9 @@ export const getUserById = async (id) => {
 
 //!---------------------------------------------------------------
 export const getUserProfileById = async (id) => {
-  const user = await UserCollection.findById(id);
+  const user = await UserCollection.findById(id).select(
+    'name description savedStories publicStories createdAt updatedAt avatar',
+  );
 
   if (!user) throw createHttpError(400, `User not foud: ${id}`);
 
