@@ -1,4 +1,4 @@
-ValidationFailed: #400
+BadRequest: #400
   description: Validation failed
   content:
     application/json:

@@ -136,7 +136,7 @@ export const updateUserInfo = async (_id, description) => {
     _id,
     { description },
     { new: true },
-  );
+  ).select('name description savedStories publicStories createdAt updatedAt');
 
   return updatedUser;
 };

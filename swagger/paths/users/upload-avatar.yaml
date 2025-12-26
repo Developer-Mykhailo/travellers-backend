@@ -2,7 +2,7 @@ tags:
   - Users
 summary: Upload user avatar
 operationId: uploadUserAvatar
-description: Upload user avatar using multipart/form-data
+description: Upload and set a new avatar for the current user
 
 requestBody:
   required: true
@@ -16,6 +16,7 @@ requestBody:
           avatar:
             type: string
             format: binary
+            description: Avatar image file
 
 responses:
   200:
@@ -24,10 +25,6 @@ responses:
       application/json:
         schema:
           type: object
-          required:
-            - status
-            - message
-            - data
           properties:
             status:
               type: integer
@@ -37,19 +34,13 @@ responses:
               example: Avatar successfully uploaded!
             data:
               type: object
-              required:
-                - url
               properties:
                 url:
                   type: string
                   format: uri
                   example: https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png
+  400:
+    $ref: ../../components/responses/errors.yaml#/BadRequest
 
   401:
     $ref: ../../components/responses/errors.yaml#/Unauthorized
-
-  404:
-    $ref: ../../components/responses/errors.yaml#/NotFound
-
-  500:
-    $ref: ../../components/responses/errors.yaml#/InternalServerError
