@@ -39,6 +39,10 @@ paths:
     delete:
       $ref: ../swagger/paths/users/delete-avatar.yaml
 
+  /api/users/update-info:
+    post:
+      $ref: ../swagger/paths/users/update-user-info.yaml
+
 components:
   securitySchemes:
     bearerAuth:
