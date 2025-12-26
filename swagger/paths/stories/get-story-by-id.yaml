@@ -1,0 +1,71 @@
+tags:
+  - Stories
+summary: Get story by ID
+operationId: getStoryById
+description: Get full story details by story ID
+
+security: []
+
+parameters:
+  - in: path
+    name: id
+    required: true
+    description: Story ID
+    schema:
+      type: string
+      example: 68498236a100312bea079029
+
+responses:
+  200:
+    description: Story successfully found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully found story
+            data:
+              type: object
+              properties:
+                _id:
+                  type: string
+                  example: 68498236a100312bea079029
+
+                img:
+                  type: string
+                  format: uri
+                  example: https://ftp.goit.study/img/travel-blog/68498236a100312bea079029.webp
+
+                title:
+                  type: string
+                  example: Таїланд - храми Бангкока
+
+                article:
+                  type: string
+                  example: Бангкок — це місто контрастів...
+
+                category:
+                  type: string
+                  description: Category ID
+                  example: 68fb50c80ae91338641121f0
+
+                owner:
+                  type: string
+                  description: Owner (user) ID
+                  example: 6881563901add19ee16fcffb
+
+                date:
+                  type: string
+                  example: 2024-08-02
+
+                favoriteCount:
+                  type: integer
+                  example: 18
+
+  404:
+    $ref: ../../components/responses/errors.yaml#/NotFound

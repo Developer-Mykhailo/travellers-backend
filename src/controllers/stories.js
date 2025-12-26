@@ -50,9 +50,11 @@ export const getStoryByIdController = async (req, res) => {
   res.json({
     status: 200,
     message: 'Successfully found story',
-    data,
+    data: {
+      ...data,
+      img: data.img.url,
+    },
   });
-  //
 };
 
 //!---------------------------------------------------------------
@@ -76,11 +78,15 @@ export const updateStoryContoroller = async (req, res) => {
   const photo = req.file;
 
   const newStory = await updateStory(userId, storyId, payload, photo);
+  console.log(newStory);
 
   res.json({
     status: 200,
     message: 'The story has been updated successfully!',
-    data: newStory,
+    data: {
+      ...newStory,
+      img: newStory.img.url,
+    },
   });
 };
 

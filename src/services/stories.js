@@ -23,7 +23,7 @@ export const getCategories = async () => {
 export const getStories = async (page, perPage, sortBy, sortOrder, filters) => {
   const skip = (page - 1) * perPage;
 
-  const baseQuery = StoriesCollection.find();
+  const baseQuery = StoriesCollection.find().select('-img.publicId');
 
   if (filters.categoryRegex) {
     const categories = await CategoryCollection.find({
@@ -72,13 +72,14 @@ export const getStories = async (page, perPage, sortBy, sortOrder, filters) => {
       .limit(perPage)
       .sort({ [sortBy]: sortOrder })
       .populate([
-        { path: 'owner', select: 'name avatar description' },
+        { path: 'owner', select: 'name avatar.url description' },
         { path: 'category', select: 'name' },
-      ])
-      .lean(),
+      ]),
   ]);
 
   const paginationData = calculatePaginationData(storiesCount, perPage, page);
+
+  console.log(stories);
 
   return { data: stories, ...paginationData };
 };
