@@ -50,10 +50,7 @@ export const getStoryByIdController = async (req, res) => {
   res.json({
     status: 200,
     message: 'Successfully found story',
-    data: {
-      ...data,
-      img: data.img.url,
-    },
+    data,
   });
 };
 

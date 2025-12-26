@@ -72,25 +72,34 @@ export const getStories = async (page, perPage, sortBy, sortOrder, filters) => {
       .limit(perPage)
       .sort({ [sortBy]: sortOrder })
       .populate([
-        { path: 'owner', select: 'name avatar.url description' },
+        { path: 'owner', select: 'name avatar.url' },
         { path: 'category', select: 'name' },
       ]),
   ]);
 
   const paginationData = calculatePaginationData(storiesCount, perPage, page);
 
-  console.log(stories);
-
   return { data: stories, ...paginationData };
 };
 
 //!---------------------------------------------------------------
 export const getStoryById = async (id) => {
-  const story = await StoriesCollection.findById(id).lean();
+  const story = await StoriesCollection.findById(id)
+    .select('-img.publicId ')
+    .lean();
 
   if (!story) throw createHttpError(400, `Story not foud: ${id}`);
 
-  return story;
+  const categoryDoc = await CategoryCollection.findById(story.category);
+  const ownerDoc = await UserCollection.findById(story.owner).select('name');
+
+  const data = {
+    ...story,
+    category: categoryDoc.name,
+    owner: ownerDoc.name,
+  };
+
+  return data;
 };
 
 //!---------------------------------------------------------------

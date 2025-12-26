@@ -20,7 +20,7 @@ export const getAllUsers = async (
   const skip = (page - 1) * perPage;
 
   const baseQuery = UserCollection.find().select(
-    'avatar name description publicStories',
+    'avatar.url name description publicStories',
   );
 
   if (filters.nameRegex) {
@@ -59,7 +59,7 @@ export const getUserById = async (id) => {
 //!---------------------------------------------------------------
 export const getUserProfileById = async (id) => {
   const user = await UserCollection.findById(id).select(
-    'name description savedStories publicStories createdAt updatedAt avatar',
+    'name description avatar.url savedStories publicStories createdAt updatedAt ',
   );
 
   if (!user) throw createHttpError(400, `User not foud: ${id}`);
