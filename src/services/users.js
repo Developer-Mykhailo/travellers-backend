@@ -1,13 +1,14 @@
 import createHttpError from 'http-errors';
 import { UserCollection } from '../db/models/users.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
-import { Types } from 'mongoose';
+import { Types, startSession } from 'mongoose';
 import {
   deleteFileFromCloudinary,
   saveFileToCloudinary,
 } from '../utils/saveFileToCloudinary.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
+import { StoriesCollection } from '../db/models/story.js';
 
 //!---------------------------------------------------------------
 export const getAllUsers = async (
@@ -69,23 +70,49 @@ export const getUserProfileById = async (id) => {
 
 //!---------------------------------------------------------------
 export const toggleSavedStory = async (storyId, userId) => {
-  const storyObjectId = new Types.ObjectId(storyId);
+  const session = await startSession();
+  session.startTransaction();
 
-  const pullResult = await UserCollection.updateOne(
-    { _id: userId, savedStories: storyObjectId },
-    { $pull: { savedStories: storyObjectId } },
-  );
+  try {
+    const storyObjectId = new Types.ObjectId(storyId);
 
-  if (pullResult.modifiedCount > 0) {
-    return { saved: false };
+    const pullResult = await UserCollection.updateOne(
+      { _id: userId, savedStories: storyObjectId },
+      { $pull: { savedStories: storyObjectId } },
+      { session },
+    );
+
+    if (pullResult.modifiedCount > 0) {
+      await StoriesCollection.findByIdAndUpdate(
+        storyId,
+        { $inc: { favoriteCount: -1 } },
+        { session },
+      );
+
+      await session.commitTransaction();
+      return { saved: false };
+    }
+
+    await UserCollection.updateOne(
+      { _id: userId },
+      { $addToSet: { savedStories: storyObjectId } },
+      { session },
+    );
+
+    await StoriesCollection.findByIdAndUpdate(
+      storyId,
+      { $inc: { favoriteCount: 1 } },
+      { session },
+    );
+
+    await session.commitTransaction();
+    return { saved: true };
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
   }
-
-  await UserCollection.updateOne(
-    { _id: userId },
-    { $addToSet: { savedStories: storyObjectId } },
-  );
-
-  return { saved: true };
 };
 
 //!---------------------------------------------------------------

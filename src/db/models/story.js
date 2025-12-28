@@ -34,7 +34,10 @@ const storySchema = new Schema(
         return now.toISOString().split('T')[0];
       },
     },
-    favoriteCount: { type: Number },
+    favoriteCount: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true, versionKey: false },
 );

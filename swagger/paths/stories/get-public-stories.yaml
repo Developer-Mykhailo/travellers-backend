@@ -102,9 +102,6 @@ responses:
                               url:
                                 type: string
                                 format: uri
-                              publicId:
-                                type: string
-
                           - type: 'null'
 
                       title:
@@ -134,16 +131,12 @@ responses:
                           name:
                             type: string
                             example: User Name
-                          description:
-                            type: string
                           avatar:
                             type: object
                             properties:
                               url:
                                 type: string
                                 format: uri
-                              publicId:
-                                type: string
 
                       date:
                         type: string
