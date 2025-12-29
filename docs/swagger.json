@@ -389,6 +389,8 @@
             "name": "page",
             "schema": {
               "type": "integer",
+              "default": 1,
+              "minimum": 1,
               "example": 1
             }
           },
@@ -397,6 +399,9 @@
             "name": "perPage",
             "schema": {
               "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
               "example": 10
             }
           },
@@ -408,7 +413,8 @@
               "enum": [
                 "name",
                 "publicStories"
-              ]
+              ],
+              "example": "publicStories"
             }
           },
           {
@@ -419,21 +425,22 @@
               "enum": [
                 "asc",
                 "desc"
-              ]
+              ],
+              "example": "desc"
             }
           },
           {
             "in": "query",
             "name": "name",
-            "description": "You can put in several",
+            "description": "You can pass several names",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
               },
               "example": [
-                "Романенко",
-                "Mykhailo"
+                "Mykhailo",
+                "Назар Романенко"
               ]
             }
           }
@@ -447,10 +454,12 @@
                   "type": "object",
                   "properties": {
                     "status": {
-                      "type": "integer"
+                      "type": "integer",
+                      "example": 200
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Users successfully found!"
                     },
                     "data": {
                       "type": "object",
@@ -458,26 +467,65 @@
                         "data": {
                           "type": "array",
                           "items": {
-                            "type": "object"
+                            "type": "object",
+                            "properties": {
+                              "_id": {
+                                "type": "string",
+                                "example": "694a88bbcbc8579663486147"
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "User Name"
+                              },
+                              "description": {
+                                "type": "string",
+                                "example": "Привіт всім. Люблю подорожувати та ділитись своїми історіями"
+                              },
+                              "publicStories": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "example": [
+                                  "694a8c750cbe696229c7bb24",
+                                  "694b2b4039f9981db9f960d2"
+                                ]
+                              },
+                              "avatar": {
+                                "type": "object",
+                                "properties": {
+                                  "url": {
+                                    "type": "string",
+                                    "format": "uri"
+                                  }
+                                }
+                              }
+                            }
                           }
                         },
                         "page": {
-                          "type": "integer"
+                          "type": "integer",
+                          "example": 1
                         },
                         "perPage": {
-                          "type": "integer"
+                          "type": "integer",
+                          "example": 10
                         },
                         "totalItems": {
-                          "type": "integer"
+                          "type": "integer",
+                          "example": 2
                         },
                         "totalPages": {
-                          "type": "integer"
+                          "type": "integer",
+                          "example": 1
                         },
                         "hasNextPage": {
-                          "type": "boolean"
+                          "type": "boolean",
+                          "example": false
                         },
                         "hasPreviousPage": {
-                          "type": "boolean"
+                          "type": "boolean",
+                          "example": false
                         }
                       }
                     }
@@ -582,10 +630,6 @@
                               "type": "string",
                               "format": "uri",
                               "example": "https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png"
-                            },
-                            "publicId": {
-                              "type": "string",
-                              "example": "travellers-backend/avatars/1766493124483_195615627_yfgkmc"
                             }
                           }
                         }
@@ -652,12 +696,7 @@
                           "properties": {
                             "url": {
                               "type": "string",
-                              "format": "uri",
-                              "example": "https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png"
-                            },
-                            "publicId": {
-                              "type": "string",
-                              "example": "travellers-backend/avatars/1766493124483_195615627_yfgkmc"
+                              "format": "uri"
                             }
                           }
                         },
@@ -801,10 +840,9 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "url": {
+                        "avatar": {
                           "type": "string",
-                          "format": "uri",
-                          "example": "https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png"
+                          "format": "uri"
                         }
                       }
                     }

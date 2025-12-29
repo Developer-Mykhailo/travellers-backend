@@ -35,10 +35,9 @@ responses:
             data:
               type: object
               properties:
-                url:
+                avatar:
                   type: string
                   format: uri
-                  example: https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png
   400:
     $ref: ../../components/responses/errors.yaml#/BadRequest
 

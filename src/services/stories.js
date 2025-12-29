@@ -128,7 +128,7 @@ export const addStory = async (payload, userId, photo) => {
     article,
     category: categoryDoc._id,
     owner: userId,
-    img: photoData,
+    img: photoData.url,
   });
 
   await UserCollection.findByIdAndUpdate(userId, {

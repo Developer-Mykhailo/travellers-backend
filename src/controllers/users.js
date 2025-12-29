@@ -75,13 +75,13 @@ export const uploadAvatarController = async (req, res) => {
   const { _id } = req.user;
   const avatar = req.file;
 
-  const uploadedAvatar = await uploadAvatar(_id, avatar);
+  const newAvatar = await uploadAvatar(_id, avatar);
 
   res.json({
     status: 200,
     message: 'Avatar successfully uploaded!',
     data: {
-      url: uploadedAvatar.url,
+      avatar: newAvatar,
     },
   });
 };

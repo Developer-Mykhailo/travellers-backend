@@ -39,10 +39,6 @@ responses:
                     url:
                       type: string
                       format: uri
-                      example: https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png
-                    publicId:
-                      type: string
-                      example: travellers-backend/avatars/1766493124483_195615627_yfgkmc
 
                 description:
                   type: string

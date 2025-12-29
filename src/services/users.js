@@ -45,22 +45,19 @@ export const getAllUsers = async (
 
 //!---------------------------------------------------------------
 export const getUserById = async (id) => {
-  const user = await UserCollection.findById(id);
+  const user = await UserCollection.findById(id).select(
+    ' name avatar.url description publicStories',
+  );
 
   if (!user) throw createHttpError(400, `User not foud: ${id}`);
 
-  return {
-    name: user.name,
-    avatar: user.avatar,
-    description: user.description,
-    publicStories: user.publicStories,
-  };
+  return user;
 };
 
 //!---------------------------------------------------------------
 export const getUserProfileById = async (id) => {
   const user = await UserCollection.findById(id).select(
-    'name description avatar.url savedStories publicStories createdAt updatedAt ',
+    ' -avatar.publicId -email',
   );
 
   if (!user) throw createHttpError(400, `User not foud: ${id}`);
@@ -117,25 +114,26 @@ export const toggleSavedStory = async (storyId, userId) => {
 
 //!---------------------------------------------------------------
 export const uploadAvatar = async (_id, avatar) => {
-  let photoData = null;
+  if (!avatar) return null;
 
-  if (avatar) {
-    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
-      photoData = await saveFileToCloudinary(avatar, 'avatars');
-    } else {
-      photoData = await saveFileToUploadDir(avatar);
-    }
+  const photoData =
+    getEnvVar('ENABLE_CLOUDINARY') === 'true'
+      ? await saveFileToCloudinary(avatar, 'avatars')
+      : await saveFileToUploadDir(avatar);
+
+  const prevUser = await UserCollection.findByIdAndUpdate(
+    _id,
+    { avatar: photoData },
+    { new: false, runValidators: true },
+  ).lean();
+
+  const prevPublicId = prevUser?.avatar?.publicId;
+
+  if (prevPublicId && getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+    await deleteFileFromCloudinary(prevPublicId);
   }
 
-  const updatedUser = await UserCollection.findByIdAndUpdate(
-    _id,
-    {
-      avatar: photoData,
-    },
-    { new: true, runValidators: true },
-  );
-
-  return updatedUser.avatar;
+  return photoData.url;
 };
 
 //!---------------------------------------------------------------
@@ -163,7 +161,7 @@ export const updateUserInfo = async (_id, description) => {
     _id,
     { description },
     { new: true },
-  ).select('name description savedStories publicStories createdAt updatedAt');
+  ).select('-email');
 
   return updatedUser;
 };
