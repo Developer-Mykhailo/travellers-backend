@@ -1,7 +1,7 @@
 tags:
   - Users
 summary: Toggle saved story for user
-operationId: toggleSavedStory
+operationId: toggleSavedStoryById
 description: Add or remove a story from the user's saved stories list
 
 parameters:

@@ -37,9 +37,12 @@ responses:
                   example: 68498236a100312bea079029
 
                 img:
-                  type: string
-                  format: uri
-                  example: https://ftp.goit.study/img/travel-blog/68498236a100312bea079029.webp
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                      format: uri
+                      example: https://ftp.goit.study/img/travel-blog/68498236a100312bea079029.webp,
 
                 title:
                   type: string
@@ -51,13 +54,11 @@ responses:
 
                 category:
                   type: string
-                  description: Category ID
-                  example: 68fb50c80ae91338641121f0
+                  example: Гори
 
                 owner:
                   type: string
-                  description: Owner (user) ID
-                  example: 6881563901add19ee16fcffb
+                  example: User Name
 
                 date:
                   type: string
@@ -66,6 +67,16 @@ responses:
                 favoriteCount:
                   type: integer
                   example: 18
+
+                createdAt:
+                  type: string
+                  format: date-time
+                  example: 2025-12-23T12:35:01.557Z
+
+                updatedAt:
+                  type: string
+                  format: date-time
+                  example: 2025-12-27T05:41:43.149Z
 
   404:
     $ref: ../../components/responses/errors.yaml#/NotFound
