@@ -88,8 +88,10 @@ responses:
                           - 694b2b4039f9981db9f960d2
 
                       avatar:
-                        type: string
-                        format: uri
+                        oneOf:
+                          - type: string
+                            format: uri
+                          - type: 'null'
 
                 page:
                   type: integer

@@ -38,8 +38,10 @@ responses:
                   example: User Name
 
                 avatar:
-                  type: string
-                  format: uri
+                  oneOf:
+                    - type: string
+                      format: uri
+                    - type: 'null'
 
                 description:
                   type: string

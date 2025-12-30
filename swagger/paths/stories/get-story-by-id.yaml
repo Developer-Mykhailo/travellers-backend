@@ -37,12 +37,8 @@ responses:
                   example: 68498236a100312bea079029
 
                 img:
-                  type: object
-                  properties:
-                    url:
-                      type: string
-                      format: uri
-                      example: https://ftp.goit.study/img/travel-blog/68498236a100312bea079029.webp,
+                  type: string
+                  format: uri
 
                 title:
                   type: string

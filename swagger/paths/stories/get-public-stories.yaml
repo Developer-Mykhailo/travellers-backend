@@ -97,11 +97,8 @@ responses:
 
                       img:
                         oneOf:
-                          - type: object
-                            properties:
-                              url:
-                                type: string
-                                format: uri
+                          - type: string
+                            format: uri
                           - type: 'null'
 
                       title:
@@ -132,11 +129,10 @@ responses:
                             type: string
                             example: User Name
                           avatar:
-                            type: object
-                            properties:
-                              url:
-                                type: string
+                            oneOf:
+                              - type: string
                                 format: uri
+                              - type: 'null'
 
                       date:
                         type: string

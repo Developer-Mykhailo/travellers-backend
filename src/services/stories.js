@@ -109,6 +109,7 @@ export const getStoryById = async (id) => {
 
   const data = {
     ...story,
+    img: story.img?.url ?? null,
     category: categoryDoc.name,
     owner: ownerDoc.name,
   };

@@ -61,8 +61,10 @@ responses:
                   format: date-time
                   example: 2025-12-23T23:52:32.365Z
                 avatar:
-                  type: string
-                  format: uri
+                  oneOf:
+                    - type: string
+                      format: uri
+                    - type: 'null'
 
   401:
     $ref: ../../components/responses/errors.yaml#/Unauthorized
