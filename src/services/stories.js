@@ -72,14 +72,28 @@ export const getStories = async (page, perPage, sortBy, sortOrder, filters) => {
       .limit(perPage)
       .sort({ [sortBy]: sortOrder })
       .populate([
-        { path: 'owner', select: 'name avatar.url' },
+        { path: 'owner', select: 'name avatar' },
         { path: 'category', select: 'name' },
       ]),
   ]);
 
   const paginationData = calculatePaginationData(storiesCount, perPage, page);
 
-  return { data: stories, ...paginationData };
+  const mappedStories = stories.map((story) => ({
+    ...story.toObject(),
+
+    img: story.img?.url ?? null,
+
+    owner: story.owner
+      ? {
+          _id: story.owner._id,
+          name: story.owner.name,
+          avatar: story.owner.avatar?.url ?? null,
+        }
+      : null,
+  }));
+
+  return { data: mappedStories, ...paginationData };
 };
 
 //!---------------------------------------------------------------
@@ -128,14 +142,14 @@ export const addStory = async (payload, userId, photo) => {
     article,
     category: categoryDoc._id,
     owner: userId,
-    img: photoData.url,
+    img: photoData,
   });
 
   await UserCollection.findByIdAndUpdate(userId, {
     $addToSet: { publicStories: newStory._id },
   }).lean();
 
-  return newStory;
+  return { ...newStory.toObject(), img: photoData.url };
 };
 
 //!---------------------------------------------------------------
@@ -160,6 +174,7 @@ export const updateStory = async (userId, storyId, payload, photo) => {
 
   if (photo) {
     const { img: { publicId } = {} } = story;
+
     if (publicId) await deleteFileFromCloudinary(publicId);
 
     if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {

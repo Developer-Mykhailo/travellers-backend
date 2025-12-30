@@ -29,16 +29,17 @@ responses:
             data:
               type: object
               properties:
+                _id:
+                  type: string
+                  example: 694a88bbcbc8579663486147
+
                 name:
                   type: string
                   example: User Name
 
                 avatar:
-                  type: object
-                  properties:
-                    url:
-                      type: string
-                      format: uri
+                  type: string
+                  format: uri
 
                 description:
                   type: string

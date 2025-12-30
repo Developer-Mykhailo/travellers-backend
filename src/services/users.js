@@ -21,7 +21,7 @@ export const getAllUsers = async (
   const skip = (page - 1) * perPage;
 
   const baseQuery = UserCollection.find().select(
-    'avatar.url name description publicStories',
+    ' avatar name description publicStories',
   );
 
   if (filters.nameRegex) {
@@ -40,33 +40,65 @@ export const getAllUsers = async (
 
   const paginationData = calculatePaginationData(usersCount, perPage, page);
 
-  return { data: users, ...paginationData };
+  const mappedUsers = users.map((user) => ({
+    ...user.toObject(),
+    avatar: user.avatar?.url ?? null,
+  }));
+
+  return {
+    data: mappedUsers,
+    ...paginationData,
+  };
 };
 
 //!---------------------------------------------------------------
 export const getUserById = async (id) => {
   const user = await UserCollection.findById(id).select(
-    ' name avatar.url description publicStories',
+    'name avatar.url description publicStories',
   );
 
-  if (!user) throw createHttpError(400, `User not foud: ${id}`);
+  if (!user) throw createHttpError(400, `User not found: ${id}`);
 
-  return user;
+  return {
+    ...user.toObject(),
+    avatar: user.avatar?.url ?? null,
+  };
 };
 
 //!---------------------------------------------------------------
 export const getUserProfileById = async (id) => {
   const user = await UserCollection.findById(id).select(
-    ' -avatar.publicId -email',
+    ' -avatar.publicId -email -password',
   );
 
   if (!user) throw createHttpError(400, `User not foud: ${id}`);
 
-  return user;
+  const existingStories = await StoriesCollection.find({
+    _id: { $in: user.savedStories },
+  })
+    .select('_id')
+    .lean();
+
+  if (existingStories.length !== user.savedStories.length) {
+    await UserCollection.updateOne(
+      { _id: user._id },
+      { $set: { savedStories: existingStories } },
+    );
+  }
+
+  return {
+    ...user.toObject(),
+    savedStories: existingStories.map((story) => story._id.toString()),
+    avatar: user.avatar?.url ?? null,
+  };
 };
 
 //!---------------------------------------------------------------
 export const toggleSavedStory = async (storyId, userId) => {
+  const isStoryExist = await StoriesCollection.findById(storyId);
+
+  if (!isStoryExist) throw createHttpError(400, `Story not foud: ${storyId}`);
+
   const session = await startSession();
   session.startTransaction();
 

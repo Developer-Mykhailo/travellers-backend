@@ -34,9 +34,7 @@ responses:
                 name:
                   type: string
                   example: User Name
-                email:
-                  type: string
-                  example: user.email@gmail.com
+
                 description:
                   type: string
                   example: Hello everyone, I am happy to share my stories.
@@ -63,12 +61,8 @@ responses:
                   format: date-time
                   example: 2025-12-23T23:52:32.365Z
                 avatar:
-                  type: object
-                  properties:
-                    url:
-                      type: string
-                      format: uri
-                      example: https://res.cloudinary.com/demo/image/upload/w_100,h_100,c_thumb,g_face,r_20,d_avatar.png/non_existing_id.png
+                  type: string
+                  format: uri
 
   401:
     $ref: ../../components/responses/errors.yaml#/Unauthorized
