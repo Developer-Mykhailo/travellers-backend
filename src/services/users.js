@@ -21,7 +21,7 @@ export const getAllUsers = async (
   const skip = (page - 1) * perPage;
 
   const baseQuery = UserCollection.find().select(
-    ' avatar name description publicStories',
+    '-avatar.publicId -password -email -savedStories',
   );
 
   if (filters.nameRegex) {
@@ -193,7 +193,7 @@ export const updateUserInfo = async (_id, description) => {
     _id,
     { description },
     { new: true },
-  ).select('-email');
+  ).select('-email -avatar.publicId -password');
 
-  return updatedUser;
+  return { ...updatedUser.toObject(), avatar: updatedUser.avatar.url };
 };
