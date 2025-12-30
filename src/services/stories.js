@@ -84,9 +84,10 @@ export const getStories = async (page, perPage, sortBy, sortOrder, filters) => {
 
     img: story.img?.url ?? null,
 
+    category: story.category.name,
+
     owner: story.owner
       ? {
-          _id: story.owner._id,
           name: story.owner.name,
           avatar: story.owner.avatar?.url ?? null,
         }
@@ -130,12 +131,10 @@ export const addStory = async (payload, userId, photo) => {
   if (!categoryDoc)
     throw createHttpError(400, `Category not found: ${category}`);
 
-  if (photo) {
-    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
-      photoData = await saveFileToCloudinary(photo, 'stories');
-    } else {
-      photoData = await saveFileToUploadDir(photo);
-    }
+  if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+    photoData = await saveFileToCloudinary(photo, 'stories');
+  } else {
+    photoData = await saveFileToUploadDir(photo);
   }
 
   const newStory = await StoriesCollection.create({
@@ -146,11 +145,23 @@ export const addStory = async (payload, userId, photo) => {
     img: photoData,
   });
 
+  await newStory.populate([
+    { path: 'owner', select: 'name avatar.url' },
+    { path: 'category', select: 'name' },
+  ]);
+
   await UserCollection.findByIdAndUpdate(userId, {
     $addToSet: { publicStories: newStory._id },
   }).lean();
 
-  return { ...newStory.toObject(), img: photoData.url };
+  const storyObj = newStory.toObject();
+  storyObj.img = photoData.url;
+
+  if (storyObj.owner?.avatar) {
+    storyObj.owner.avatar = storyObj.owner.avatar.url;
+  }
+
+  return storyObj;
 };
 
 //!---------------------------------------------------------------

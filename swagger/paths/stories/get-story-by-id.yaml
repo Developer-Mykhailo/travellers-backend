@@ -31,48 +31,7 @@ responses:
               example: Successfully found story
             data:
               type: object
-              properties:
-                _id:
-                  type: string
-                  example: 68498236a100312bea079029
-
-                img:
-                  type: string
-                  format: uri
-
-                title:
-                  type: string
-                  example: Таїланд - храми Бангкока
-
-                article:
-                  type: string
-                  example: Бангкок — це місто контрастів...
-
-                category:
-                  type: string
-                  example: Гори
-
-                owner:
-                  type: string
-                  example: User Name
-
-                date:
-                  type: string
-                  example: 2024-08-02
-
-                favoriteCount:
-                  type: integer
-                  example: 18
-
-                createdAt:
-                  type: string
-                  format: date-time
-                  example: 2025-12-23T12:35:01.557Z
-
-                updatedAt:
-                  type: string
-                  format: date-time
-                  example: 2025-12-27T05:41:43.149Z
+              $ref: ../../components/schemas/story.yaml
 
   404:
     $ref: ../../components/responses/errors.yaml#/NotFound

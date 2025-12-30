@@ -149,83 +149,36 @@
                         "data": {
                           "type": "array",
                           "items": {
-                            "type": "object",
-                            "properties": {
-                              "_id": {
-                                "type": "string",
-                                "example": "694a8c750cbe696229c7bb24"
+                            "allOf": [
+                              {
+                                "$ref": "#/components/schemas/story"
                               },
-                              "img": {
-                                "oneOf": [
-                                  {
-                                    "type": "string",
-                                    "format": "uri"
-                                  },
-                                  {
-                                    "type": "null"
-                                  }
-                                ]
-                              },
-                              "title": {
-                                "type": "string",
-                                "example": "Banff-Lakeshore"
-                              },
-                              "article": {
-                                "type": "string",
-                                "example": "About Banff-Lakeshore Lorem ipsum..."
-                              },
-                              "category": {
+                              {
                                 "type": "object",
                                 "properties": {
-                                  "_id": {
-                                    "type": "string",
-                                    "example": "694a8c750cbe696229c7bb24"
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                    "example": "Гори"
-                                  }
-                                }
-                              },
-                              "owner": {
-                                "type": "object",
-                                "properties": {
-                                  "_id": {
-                                    "type": "string",
-                                    "example": "694a8c750cbe696229c7bb24"
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                    "example": "User Name"
-                                  },
-                                  "avatar": {
+                                  "owner": {
                                     "type": "object",
                                     "properties": {
-                                      "url": {
+                                      "name": {
                                         "type": "string",
-                                        "format": "uri"
+                                        "example": "User Name"
+                                      },
+                                      "avatar": {
+                                        "oneOf": [
+                                          {
+                                            "type": "string",
+                                            "format": "uri"
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
                                       }
                                     }
                                   }
                                 }
-                              },
-                              "date": {
-                                "type": "string",
-                                "example": "2025-12-23"
-                              },
-                              "favoriteCount": {
-                                "type": "integer",
-                                "example": 11
-                              },
-                              "createdAt": {
-                                "type": "string",
-                                "format": "date-time"
-                              },
-                              "updatedAt": {
-                                "type": "string",
-                                "format": "date-time"
                               }
-                            }
+                            ]
                           }
                         },
                         "page": {
@@ -264,6 +217,128 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Stories"
+        ],
+        "summary": "Create new story",
+        "operationId": "createStory",
+        "description": "Create a new story with image upload",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title",
+                  "article",
+                  "category",
+                  "photo"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Mountains"
+                  },
+                  "article": {
+                    "type": "string",
+                    "example": "About Mountains - Lorem ipsum dolor sit amet..."
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "Category ID",
+                    "example": "Гори"
+                  },
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Story image file"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Story successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 201
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Story successfully created!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/story"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "category": {
+                              "type": "object",
+                              "properties": {
+                                "_id": {
+                                  "type": "string",
+                                  "example": "64f1c9c2e4b0f5a123456789"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "example": "Гори"
+                                }
+                              }
+                            },
+                            "owner": {
+                              "type": "object",
+                              "properties": {
+                                "_id": {
+                                  "type": "string",
+                                  "example": "64f1c9c2e4b0f5a123456789"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "example": "User Name"
+                                },
+                                "avatar": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string",
+                                      "format": "uri"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -307,56 +382,7 @@
                     },
                     "data": {
                       "type": "object",
-                      "properties": {
-                        "_id": {
-                          "type": "string",
-                          "example": "68498236a100312bea079029"
-                        },
-                        "img": {
-                          "type": "object",
-                          "properties": {
-                            "url": {
-                              "type": "string",
-                              "format": "uri",
-                              "example": "https://ftp.goit.study/img/travel-blog/68498236a100312bea079029.webp,"
-                            }
-                          }
-                        },
-                        "title": {
-                          "type": "string",
-                          "example": "Таїланд - храми Бангкока"
-                        },
-                        "article": {
-                          "type": "string",
-                          "example": "Бангкок — це місто контрастів..."
-                        },
-                        "category": {
-                          "type": "string",
-                          "example": "Гори"
-                        },
-                        "owner": {
-                          "type": "string",
-                          "example": "User Name"
-                        },
-                        "date": {
-                          "type": "string",
-                          "example": "2024-08-02"
-                        },
-                        "favoriteCount": {
-                          "type": "integer",
-                          "example": 18
-                        },
-                        "createdAt": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2025-12-23T12:35:01.557Z"
-                        },
-                        "updatedAt": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2025-12-27T05:41:43.149Z"
-                        }
-                      }
+                      "$ref": "#/components/schemas/story"
                     }
                   }
                 }
@@ -487,8 +513,15 @@
                                 ]
                               },
                               "avatar": {
-                                "type": "string",
-                                "format": "uri"
+                                "oneOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "uri"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
                               }
                             }
                           }
@@ -610,8 +643,15 @@
                           "example": "2025-12-23T23:52:32.365Z"
                         },
                         "avatar": {
-                          "type": "string",
-                          "format": "uri"
+                          "oneOf": [
+                            {
+                              "type": "string",
+                              "format": "uri"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
                         }
                       }
                     }
@@ -676,8 +716,15 @@
                           "example": "User Name"
                         },
                         "avatar": {
-                          "type": "string",
-                          "format": "uri"
+                          "oneOf": [
+                            {
+                              "type": "string",
+                              "format": "uri"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
                         },
                         "description": {
                           "type": "string",
@@ -971,8 +1018,15 @@
                           "example": "2025-12-26T05:13:44.469Z"
                         },
                         "avatar": {
-                          "type": "string",
-                          "format": "uri"
+                          "oneOf": [
+                            {
+                              "type": "string",
+                              "format": "uri"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
                         }
                       }
                     }
@@ -999,6 +1053,53 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "story": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "69535f3449a7e0f0cf9fd0c3"
+          },
+          "img": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string",
+            "example": "Banff-Lakeshore"
+          },
+          "article": {
+            "type": "string",
+            "example": "About Banff-Lakeshore Lorem ipsum..."
+          },
+          "category": {
+            "type": "string",
+            "example": "Гори"
+          },
+          "owner": {
+            "description": "User ID or user name",
+            "type": "string",
+            "example": "User Name"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "favoriteCount": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
       }
     },
     "responses": {

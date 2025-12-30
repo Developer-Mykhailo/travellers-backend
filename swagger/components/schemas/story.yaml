@@ -1,0 +1,41 @@
+type: object
+properties:
+  _id:
+    type: string
+    example: 69535f3449a7e0f0cf9fd0c3
+
+  img:
+    type: string
+    format: uri
+
+  title:
+    type: string
+    example: Banff-Lakeshore
+
+  article:
+    type: string
+    example: About Banff-Lakeshore Lorem ipsum...
+
+  category:
+    type: string
+    example: Гори
+
+  owner:
+    description: User ID or user name
+    type: string
+    example: User Name
+
+  date:
+    type: string
+    format: date
+
+  favoriteCount:
+    type: integer
+
+  createdAt:
+    type: string
+    format: date-time
+
+  updatedAt:
+    type: string
+    format: date-time

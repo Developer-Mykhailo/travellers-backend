@@ -89,66 +89,21 @@ responses:
                 data:
                   type: array
                   items:
-                    type: object
-                    properties:
-                      _id:
-                        type: string
-                        example: 694a8c750cbe696229c7bb24
-
-                      img:
-                        oneOf:
-                          - type: string
-                            format: uri
-                          - type: 'null'
-
-                      title:
-                        type: string
-                        example: Banff-Lakeshore
-
-                      article:
-                        type: string
-                        example: About Banff-Lakeshore Lorem ipsum...
-
-                      category:
-                        type: object
+                    allOf:
+                      - $ref: ../../components/schemas/story.yaml
+                      - type: object
                         properties:
-                          _id:
-                            type: string
-                            example: 694a8c750cbe696229c7bb24
-                          name:
-                            type: string
-                            example: Гори
-
-                      owner:
-                        type: object
-                        properties:
-                          _id:
-                            type: string
-                            example: 694a8c750cbe696229c7bb24
-                          name:
-                            type: string
-                            example: User Name
-                          avatar:
-                            oneOf:
-                              - type: string
-                                format: uri
-                              - type: 'null'
-
-                      date:
-                        type: string
-                        example: 2025-12-23
-
-                      favoriteCount:
-                        type: integer
-                        example: 11
-
-                      createdAt:
-                        type: string
-                        format: date-time
-
-                      updatedAt:
-                        type: string
-                        format: date-time
+                          owner:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                example: User Name
+                              avatar:
+                                oneOf:
+                                  - type: string
+                                    format: uri
+                                  - type: 'null'
 
                 page:
                   type: integer

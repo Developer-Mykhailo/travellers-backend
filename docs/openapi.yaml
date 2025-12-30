@@ -20,6 +20,9 @@ paths:
     get:
       $ref: ../swagger/paths/stories/get-public-stories.yaml
 
+    post:
+      $ref: ../swagger/paths/stories/create-story.yaml
+
   /api/stories/{id}:
     get:
       $ref: ../swagger/paths/stories/get-story-by-id.yaml
