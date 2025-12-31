@@ -282,6 +282,75 @@
         }
       }
     },
+    "/api/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Refresh access token",
+        "operationId": "refreshToken",
+        "description": "Refresh a user session using a valid refresh token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "refreshToken"
+                ],
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "example": "6ZqGS0ZudjyCrdJFYNWAb49R0pXLr3cSWcMKn5OE"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully refreshed session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully refreshed a session!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "accessToken"
+                      ],
+                      "properties": {
+                        "accessToken": {
+                          "type": "string",
+                          "example": "7WR50Ls658t8LVOPB7geJ0NJ0RtZScr0C3jWK8Pc"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/api/stories": {
       "get": {
         "tags": [
@@ -1583,6 +1652,47 @@
           }
         }
       },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Error definition"
+                },
+                "data": {
+                  "type": "object",
+                  "description": "list of possible errors",
+                  "properties": {
+                    "message": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "example": {
+              "status": 401,
+              "message": "UnauthorizedError",
+              "data": {
+                "message": [
+                  "Session not found",
+                  "Access token expired"
+                ]
+              }
+            }
+          }
+        }
+      },
       "NotFound": {
         "description": "Resource not Found",
         "content": {
@@ -1619,47 +1729,6 @@
                   "Route not found",
                   "User not found",
                   "Story not found"
-                ]
-              }
-            }
-          }
-        }
-      },
-      "Unauthorized": {
-        "description": "Unauthorized",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "integer"
-                },
-                "message": {
-                  "type": "string",
-                  "description": "Error definition"
-                },
-                "data": {
-                  "type": "object",
-                  "description": "list of possible errors",
-                  "properties": {
-                    "message": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "example": {
-              "status": 401,
-              "message": "UnauthorizedError",
-              "data": {
-                "message": [
-                  "Session not found",
-                  "Access token expired"
                 ]
               }
             }

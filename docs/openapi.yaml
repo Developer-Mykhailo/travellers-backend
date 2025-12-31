@@ -30,6 +30,10 @@ paths:
     post:
       $ref: ../swagger/paths/auth/login.yaml
 
+  /api/auth/refresh:
+    post:
+      $ref: ../swagger/paths/auth/refresh.yaml
+
   # Stories
   /api/stories:
     get:
