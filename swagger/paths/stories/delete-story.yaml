@@ -1,0 +1,26 @@
+tags:
+  - Stories
+summary: Delete story
+operationId: deleteStory
+description: Delete story by ID
+
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: 695394ad4e11dc812e8e1770
+
+responses:
+  204:
+    description: 'No Content - Story successfully deleted'
+
+  400:
+    $ref: ../../components/responses/errors.yaml#/BadRequest
+
+  401:
+    $ref: ../../components/responses/errors.yaml#/Unauthorized
+
+  404:
+    $ref: ../../components/responses/errors.yaml#/NotFound

@@ -27,6 +27,9 @@ paths:
     get:
       $ref: ../swagger/paths/stories/get-story-by-id.yaml
 
+    delete:
+      $ref: ../swagger/paths/stories/delete-story.yaml
+
   # Users
   /api/users:
     get:
