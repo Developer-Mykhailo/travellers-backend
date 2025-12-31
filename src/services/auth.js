@@ -51,12 +51,12 @@ export const registerUser = async (data) => {
 //!---------------------------------------------------------------
 export const loginUser = async ({ email, password }) => {
   const user = await UserCollection.findOne({ email }).lean();
-  if (!user) throw createHttpError(401, 'User not found!');
+  if (!user) throw createHttpError(401, 'Email is incorrect!');
 
   const isEqual = await bcrypt.compare(password, user.password);
-  if (!isEqual) throw createHttpError(401, 'Unauthorized');
+  if (!isEqual) throw createHttpError(401, 'Password is incorrect');
 
-  await SessionsCollection.deleteOne({ userId: user._id }).lean();
+  await SessionsCollection.deleteOne({ userId: user._id });
 
   return await SessionsCollection.create({
     userId: user._id,

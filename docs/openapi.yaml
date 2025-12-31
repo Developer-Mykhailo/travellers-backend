@@ -7,14 +7,29 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   description: This is a documentation of travellers app
 tags:
+  - name: Auth
+    description: Auth operations.
+
   - name: Users
     description: Operations about users.
-  # - name: Auth
-  #   description: Auth operations.
+
+  - name: Stories
+    description: Operations about stories.
+
 servers:
   - url: http://localhost:3001
   # - url: https://example.com/api/v1
 paths:
+  #
+  # Auth
+  /api/auth/register:
+    post:
+      $ref: ../swagger/paths/auth/register.yaml
+
+  /api/auth/login:
+    post:
+      $ref: ../swagger/paths/auth/login.yaml
+
   # Stories
   /api/stories:
     get:

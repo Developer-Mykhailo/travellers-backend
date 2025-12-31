@@ -1,0 +1,75 @@
+tags:
+  - Auth
+summary: User registration
+operationId: registerUser
+description: Register a new user with email and password
+
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - name
+          - email
+          - password
+        properties:
+          name:
+            type: string
+            minLength: 2
+            maxLength: 32
+            example: Test User
+          email:
+            type: string
+            format: email
+            maxLength: 64
+            example: test.user@gmail.com
+          password:
+            type: string
+            format: password
+            minLength: 8
+            maxLength: 128
+            example: password123
+
+responses:
+  201:
+    description: User successfully registered
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: Successfully registered a user!
+            data:
+              type: object
+              required:
+                - user
+              properties:
+                user:
+                  type: object
+                  required:
+                    - name
+                    - email
+                  properties:
+                    name:
+                      type: string
+                      example: Test User
+                    email:
+                      type: string
+                      example: test.user@gmail.com
+
+  400:
+    $ref: ../../components/responses/errors.yaml#/BadRequest
+
+  409:
+    $ref: ../../components/responses/errors.yaml#/ConflictError

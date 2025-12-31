@@ -1,0 +1,111 @@
+tags:
+  - Auth
+summary: User login
+operationId: loginUser
+description: Authenticate user and issue access and refresh tokens
+
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            type: string
+            format: email
+            example: test.user@gmail.com
+          password:
+            type: string
+            format: password
+            example: password123
+
+responses:
+  200:
+    description: Successfully logged in
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully logged in a user!
+            data:
+              type: object
+              required:
+                - userId
+                - accessToken
+                - refreshToken
+                - accessTokenValidUntil
+                - refreshTokenValidUntil
+              properties:
+                userId:
+                  type: string
+                  example: 6954c64c7da5e2d7bd54dcab
+
+                accessToken:
+                  type: string
+                  example: fzsgimWVxDKyl6+FuaSn8T5dbExCEfUTS8V5QD3v
+
+                refreshToken:
+                  type: string
+                  example: 6ZqGS0ZudjyCrdJFYNWAb49R0pXLr3cSWcMKn5OE
+
+                accessTokenValidUntil:
+                  type: string
+                  format: date-time
+                  example: 2025-12-31T12:33:26.380Z
+
+                refreshTokenValidUntil:
+                  type: string
+                  format: date-time
+                  example: 2026-01-07T07:33:26.380Z
+
+                _id:
+                  type: string
+                  description: Session ID
+                  example: 6954d1c6691b1c6dc6e7a3be
+
+                createdAt:
+                  type: string
+                  format: date-time
+                  example: 2025-12-31T07:33:26.385Z
+
+                updatedAt:
+                  type: string
+                  format: date-time
+                  example: 2025-12-31T07:33:26.385Z
+
+  400:
+    $ref: ../../components/responses/errors.yaml#/BadRequest
+
+  401:
+    description: Invalid email or password
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: UnauthorizedError
+            data:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Email or password is incorrect

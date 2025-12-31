@@ -21,11 +21,267 @@
   ],
   "tags": [
     {
+      "name": "Auth",
+      "description": "Auth operations."
+    },
+    {
       "name": "Users",
       "description": "Operations about users."
+    },
+    {
+      "name": "Stories",
+      "description": "Operations about stories."
     }
   ],
   "paths": {
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "User registration",
+        "operationId": "registerUser",
+        "description": "Register a new user with email and password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 32,
+                    "example": "Test User"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 64,
+                    "example": "test.user@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "minLength": 8,
+                    "maxLength": 128,
+                    "example": "password123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User successfully registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 201
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully registered a user!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "user"
+                      ],
+                      "properties": {
+                        "user": {
+                          "type": "object",
+                          "required": [
+                            "name",
+                            "email"
+                          ],
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "Test User"
+                            },
+                            "email": {
+                              "type": "string",
+                              "example": "test.user@gmail.com"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "409": {
+            "$ref": "#/components/responses/ConflictError"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "User login",
+        "operationId": "loginUser",
+        "description": "Authenticate user and issue access and refresh tokens",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "test.user@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "password123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully logged in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully logged in a user!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "userId",
+                        "accessToken",
+                        "refreshToken",
+                        "accessTokenValidUntil",
+                        "refreshTokenValidUntil"
+                      ],
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "example": "6954c64c7da5e2d7bd54dcab"
+                        },
+                        "accessToken": {
+                          "type": "string",
+                          "example": "fzsgimWVxDKyl6+FuaSn8T5dbExCEfUTS8V5QD3v"
+                        },
+                        "refreshToken": {
+                          "type": "string",
+                          "example": "6ZqGS0ZudjyCrdJFYNWAb49R0pXLr3cSWcMKn5OE"
+                        },
+                        "accessTokenValidUntil": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-12-31T12:33:26.380Z"
+                        },
+                        "refreshTokenValidUntil": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2026-01-07T07:33:26.380Z"
+                        },
+                        "_id": {
+                          "type": "string",
+                          "description": "Session ID",
+                          "example": "6954d1c6691b1c6dc6e7a3be"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-12-31T07:33:26.385Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-12-31T07:33:26.385Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "description": "Invalid email or password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Email or password is incorrect"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/stories": {
       "get": {
         "tags": [
@@ -1263,53 +1519,6 @@
         "scheme": "bearer"
       }
     },
-    "schemas": {
-      "story": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "example": "69535f3449a7e0f0cf9fd0c3"
-          },
-          "img": {
-            "type": "string",
-            "format": "uri"
-          },
-          "title": {
-            "type": "string",
-            "example": "Banff-Lakeshore"
-          },
-          "article": {
-            "type": "string",
-            "example": "About Banff-Lakeshore Lorem ipsum..."
-          },
-          "category": {
-            "type": "string",
-            "example": "Гори"
-          },
-          "owner": {
-            "description": "User ID or user name",
-            "type": "string",
-            "example": "User Name"
-          },
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "favoriteCount": {
-            "type": "integer"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      }
-    },
     "responses": {
       "BadRequest": {
         "description": "Validation failed",
@@ -1323,16 +1532,13 @@
                 },
                 "message": {
                   "type": "string",
-                  "description": "General error name"
+                  "example": "Validation error"
                 },
                 "data": {
                   "type": "object",
                   "properties": {
                     "message": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
+                      "type": "string"
                     }
                   }
                 }
@@ -1342,9 +1548,36 @@
               "status": 400,
               "message": "BadRequestError",
               "data": {
-                "message": [
-                  "Error text"
-                ]
+                "message": "Error text"
+              }
+            }
+          }
+        }
+      },
+      "ConflictError": {
+        "description": "Email already exists",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 409
+                },
+                "message": {
+                  "type": "string",
+                  "example": "ConflictError"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email already in use"
+                    }
+                  }
+                }
               }
             }
           }
@@ -1430,6 +1663,53 @@
                 ]
               }
             }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "story": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "69535f3449a7e0f0cf9fd0c3"
+          },
+          "img": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string",
+            "example": "Banff-Lakeshore"
+          },
+          "article": {
+            "type": "string",
+            "example": "About Banff-Lakeshore Lorem ipsum..."
+          },
+          "category": {
+            "type": "string",
+            "example": "Гори"
+          },
+          "owner": {
+            "description": "User ID or user name",
+            "type": "string",
+            "example": "User Name"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "favoriteCount": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }
