@@ -34,6 +34,10 @@ paths:
     patch:
       $ref: ../swagger/paths/stories/update-story.yaml
 
+  /api/stories/categories:
+    get:
+      $ref: ../swagger/paths/stories/get-categories.yaml
+
   # Users
   /api/users:
     get:
