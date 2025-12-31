@@ -75,15 +75,11 @@ export const updateStoryContoroller = async (req, res) => {
   const photo = req.file;
 
   const newStory = await updateStory(userId, storyId, payload, photo);
-  console.log(newStory);
 
   res.json({
     status: 200,
     message: 'The story has been updated successfully!',
-    data: {
-      ...newStory,
-      img: newStory.img.url,
-    },
+    data: newStory,
   });
 };
 

@@ -169,28 +169,35 @@ export const updateStory = async (userId, storyId, payload, photo) => {
   const story = await StoriesCollection.findOne({
     _id: storyId,
     owner: userId,
-  }).lean();
+  }).select('img');
 
-  if (!story) throw createHttpError(404, 'Story not found');
+  if (!story) {
+    throw createHttpError(404, 'Story not found');
+  }
+
+  const updateData = {
+    title: payload.title,
+    article: payload.article,
+  };
 
   if (payload.category) {
     const categoryDoc = await CategoryCollection.findOne({
       name: payload.category,
-    }).lean();
+    }).select('_id');
 
-    if (!categoryDoc)
+    if (!categoryDoc) {
       throw createHttpError(400, `Category not found: ${payload.category}`);
+    }
 
-    story.category = categoryDoc;
+    updateData.category = categoryDoc._id;
   }
 
+  let oldPublicId = story.img?.publicId || null;
+
   if (photo) {
-    const { img: { publicId } = {} } = story;
-
-    if (publicId) await deleteFileFromCloudinary(publicId);
-
     if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
-      story.img = await saveFileToCloudinary(photo, 'stories');
+      const uploadedImage = await saveFileToCloudinary(photo, 'stories');
+      updateData.img = uploadedImage;
     } else {
       await saveFileToUploadDir(photo);
     }
@@ -198,15 +205,26 @@ export const updateStory = async (userId, storyId, payload, photo) => {
 
   const updatedStory = await StoriesCollection.findByIdAndUpdate(
     storyId,
+    updateData,
     {
-      ...payload,
-      category: story.category,
-      img: story.img,
+      new: true,
+      runValidators: true,
     },
-    { new: true, runValidators: true },
-  ).lean();
+  ).populate([
+    { path: 'category', select: 'name' },
+    { path: 'owner', select: 'name' },
+  ]);
 
-  return updatedStory;
+  if (photo && oldPublicId) {
+    await deleteFileFromCloudinary(oldPublicId);
+  }
+
+  const storyObj = updatedStory.toObject();
+
+  return {
+    ...storyObj,
+    img: storyObj.img?.url ?? null,
+  };
 };
 
 //!---------------------------------------------------------------

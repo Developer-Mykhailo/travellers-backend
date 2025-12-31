@@ -22,13 +22,17 @@ paths:
 
     post:
       $ref: ../swagger/paths/stories/create-story.yaml
-
+  # --
   /api/stories/{id}:
     get:
       $ref: ../swagger/paths/stories/get-story-by-id.yaml
 
     delete:
       $ref: ../swagger/paths/stories/delete-story.yaml
+  # --
+  /api/stories/update-story/{id}:
+    patch:
+      $ref: ../swagger/paths/stories/update-story.yaml
 
   # Users
   /api/users:

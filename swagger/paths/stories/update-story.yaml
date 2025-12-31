@@ -1,0 +1,88 @@
+tags:
+  - Stories
+summary: Update story
+operationId: updateStory
+description: Update story by ID
+
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: 69535f3449a7e0f0cf9fd0c3
+
+requestBody:
+  required: true
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          title:
+            description: New title text
+            type: string
+            example: The new title about this story ...
+
+          article:
+            description: New article text
+            type: string
+            example: The new article text describing this story ...
+
+          category:
+            type: string
+            description: Category
+            example: Америка
+
+          photo:
+            type: string
+            format: binary
+            description: New story image file
+
+responses:
+  200:
+    description: Story successfully updated
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: The story has been updated successfully!
+            data:
+              type: object
+              allOf:
+                - $ref: ../../components/schemas/story.yaml
+                - type: object
+                  properties:
+                    owner:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: 64f1c9c2e4b0f5a123456789
+                        name:
+                          type: string
+                          example: User Name
+                    category:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: 64f1ca12e4b0f5a123456790
+                        name:
+                          type: string
+                          example: Америка
+
+  400:
+    $ref: ../../components/responses/errors.yaml#/BadRequest
+
+  401:
+    $ref: ../../components/responses/errors.yaml#/Unauthorized
+
+  404:
+    $ref: ../../components/responses/errors.yaml#/NotFound
