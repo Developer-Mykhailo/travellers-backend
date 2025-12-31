@@ -34,6 +34,10 @@ paths:
     post:
       $ref: ../swagger/paths/auth/refresh.yaml
 
+  /api/auth/request-reset-password:
+    post:
+      $ref: ../swagger/paths/auth/request-reset-password.yaml
+
   # Stories
   /api/stories:
     get:
