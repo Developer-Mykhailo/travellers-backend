@@ -414,6 +414,78 @@
         }
       }
     },
+    "/api/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Reset user password",
+        "operationId": "resetPassword",
+        "description": "Reset user password using reset token from email",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "token",
+                  "password"
+                ],
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "description": "Password reset token from email",
+                    "example": "7WR50Ls658t8LVOPB7geJ0NJ0RtZScr0C3jWK8Pc"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "minLength": 8,
+                    "example": "NewStrongPassword123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password was successfully reset",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password was successfully reset!"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "object",
+                      "example": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/api/stories": {
       "get": {
         "tags": [
@@ -1660,17 +1732,30 @@
               "type": "object",
               "properties": {
                 "status": {
-                  "type": "integer"
+                  "type": "integer",
+                  "example": 400
+                },
+                "code": {
+                  "type": "string",
+                  "example": "BadRequestError"
                 },
                 "message": {
                   "type": "string",
-                  "example": "Validation error"
+                  "example": "Validation failed"
                 },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
+                "errors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "example": "email"
+                      },
+                      "message": {
+                        "type": "string",
+                        "example": "Invalid email format"
+                      }
                     }
                   }
                 }
@@ -1678,16 +1763,24 @@
             },
             "example": {
               "status": 400,
-              "message": "BadRequestError",
-              "data": {
-                "message": "Error text"
-              }
+              "code": "BadRequestError",
+              "message": "Validation failed",
+              "errors": [
+                {
+                  "field": "email",
+                  "message": "Invalid email format"
+                },
+                {
+                  "field": "password",
+                  "message": "Password too short"
+                }
+              ]
             }
           }
         }
       },
       "ConflictError": {
-        "description": "Email already exists",
+        "description": "Conflict occurred",
         "content": {
           "application/json": {
             "schema": {
@@ -1697,20 +1790,29 @@
                   "type": "integer",
                   "example": 409
                 },
-                "message": {
+                "code": {
                   "type": "string",
                   "example": "ConflictError"
                 },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Email already in use"
-                    }
+                "message": {
+                  "type": "string",
+                  "example": "Email already in use"
+                },
+                "errors": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
                   }
                 }
               }
+            },
+            "example": {
+              "status": 409,
+              "code": "ConflictError",
+              "message": "Email already in use",
+              "errors": [
+                "Email already in use"
+              ]
             }
           }
         }
@@ -1723,41 +1825,40 @@
               "type": "object",
               "properties": {
                 "status": {
-                  "type": "integer"
+                  "type": "integer",
+                  "example": 401
+                },
+                "code": {
+                  "type": "string",
+                  "example": "UnauthorizedError"
                 },
                 "message": {
                   "type": "string",
-                  "description": "Error definition"
+                  "example": "Access denied"
                 },
-                "data": {
-                  "type": "object",
-                  "description": "list of possible errors",
-                  "properties": {
-                    "message": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
+                "errors": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "example": "Session not found"
                   }
                 }
               }
             },
             "example": {
               "status": 401,
-              "message": "UnauthorizedError",
-              "data": {
-                "message": [
-                  "Session not found",
-                  "Access token expired"
-                ]
-              }
+              "code": "UnauthorizedError",
+              "message": "Access denied",
+              "errors": [
+                "Session not found",
+                "Access token expired"
+              ]
             }
           }
         }
       },
       "NotFound": {
-        "description": "Resource not Found",
+        "description": "Resource not found",
         "content": {
           "application/json": {
             "schema": {
@@ -1767,33 +1868,31 @@
                   "type": "integer",
                   "example": 404
                 },
-                "message": {
-                  "type": "string"
+                "code": {
+                  "type": "string",
+                  "example": "NotFoundError"
                 },
-                "data": {
-                  "type": "object",
-                  "description": "list of possible errors",
-                  "properties": {
-                    "message": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
+                "message": {
+                  "type": "string",
+                  "example": "Resource not found"
+                },
+                "errors": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "example": "User not found"
                   }
                 }
               }
             },
             "example": {
               "status": 404,
-              "message": "NotFoundError",
-              "data": {
-                "message": [
-                  "Route not found",
-                  "User not found",
-                  "Story not found"
-                ]
-              }
+              "code": "NotFoundError",
+              "message": "Resource not found",
+              "errors": [
+                "User not found",
+                "Story not found"
+              ]
             }
           }
         }
