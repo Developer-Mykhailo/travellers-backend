@@ -54,29 +54,6 @@ paths:
     post:
       $ref: ../swagger/paths/auth/google/get-oauth-url.yaml
 
-  # Stories
-  /api/stories:
-    get:
-      $ref: ../swagger/paths/stories/get-public-stories.yaml
-
-    post:
-      $ref: ../swagger/paths/stories/create-story.yaml
-  # --
-  /api/stories/{id}:
-    get:
-      $ref: ../swagger/paths/stories/get-story-by-id.yaml
-
-    delete:
-      $ref: ../swagger/paths/stories/delete-story.yaml
-  # --
-  /api/stories/update-story/{id}:
-    patch:
-      $ref: ../swagger/paths/stories/update-story.yaml
-
-  /api/stories/categories:
-    get:
-      $ref: ../swagger/paths/stories/get-categories.yaml
-
   # Users
   /api/users:
     get:
@@ -105,6 +82,29 @@ paths:
   /api/users/update-info:
     post:
       $ref: ../swagger/paths/users/update-user-info.yaml
+
+  # Stories
+  /api/stories:
+    get:
+      $ref: ../swagger/paths/stories/get-public-stories.yaml
+
+    post:
+      $ref: ../swagger/paths/stories/create-story.yaml
+  # --
+  /api/stories/{id}:
+    get:
+      $ref: ../swagger/paths/stories/get-story-by-id.yaml
+
+    delete:
+      $ref: ../swagger/paths/stories/delete-story.yaml
+  # --
+  /api/stories/update-story/{id}:
+    patch:
+      $ref: ../swagger/paths/stories/update-story.yaml
+
+  /api/stories/categories:
+    get:
+      $ref: ../swagger/paths/stories/get-categories.yaml
 
 components:
   securitySchemes:

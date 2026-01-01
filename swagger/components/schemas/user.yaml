@@ -1,59 +1,25 @@
 type: object
-required:
-  - name
-  - email
-  - password
 properties:
   _id:
     type: string
-    example: '64f1c9c2e4b0f5a123456789'
+    example: 694a88bbcbc8579663486147
 
   name:
     type: string
-    example: 'John Doe'
-
-  email:
-    type: string
-    format: email
-    example: 'john@example.com'
-
-  password:
-    type: string
-    format: password
-    example: 'user@email.com'
-
-  avatar:
-    type: object
-    properties:
-      url:
-        type: string
-        example: 'https://res.cloudinary.com/demo/image/upload/avatar.jpg'
-      publicId:
-        type: string
-        example: 'avatar_12345'
+    example: User Name
 
   description:
     type: string
-    example: 'Hello everyone, I am happy to share my stories.'
+    example: Hello everyone, I am happy to share my stories.
 
-  savedStories:
-    type: array
-    items:
-      type: string
-      example: '64f1ca12e4b0f5a123456790'
+  avatar:
+    oneOf:
+      - type: string
+        format: uri
+      - type: 'null'
 
   publicStories:
     type: array
-    items:
-      type: string
-      example: '64f1ca12e4b0f5a123456791'
-
-  createdAt:
-    type: string
-    format: date-time
-    example: '2024-01-01T12:00:00.000Z'
-
-  updatedAt:
-    type: string
-    format: date-time
-    example: '2024-01-10T08:30:00.000Z'
+    example:
+      - 68498236a100312bea079029
+      - 694a8c750cbe696229c7bb24

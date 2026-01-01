@@ -21,7 +21,7 @@ export const getAllUsers = async (
   const skip = (page - 1) * perPage;
 
   const baseQuery = UserCollection.find().select(
-    '-avatar.publicId -password -email -savedStories',
+    'name avatar.url description publicStories',
   );
 
   if (filters.nameRegex) {

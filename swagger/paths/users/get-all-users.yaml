@@ -66,32 +66,8 @@ responses:
                 data:
                   type: array
                   items:
-                    type: object
-                    properties:
-                      _id:
-                        type: string
-                        example: 694a88bbcbc8579663486147
-
-                      name:
-                        type: string
-                        example: User Name
-                      description:
-                        type: string
-                        example: Привіт всім. Люблю подорожувати та ділитись своїми історіями
-
-                      publicStories:
-                        type: array
-                        items:
-                          type: string
-                        example:
-                          - 694a8c750cbe696229c7bb24
-                          - 694b2b4039f9981db9f960d2
-
-                      avatar:
-                        oneOf:
-                          - type: string
-                            format: uri
-                          - type: 'null'
+                    allOf:
+                      - $ref: ../../components/schemas/user.yaml
 
                 page:
                   type: integer

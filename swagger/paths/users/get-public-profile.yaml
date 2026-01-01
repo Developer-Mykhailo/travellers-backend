@@ -27,33 +27,7 @@ responses:
               type: string
               example: User successfully found!
             data:
-              type: object
-              properties:
-                _id:
-                  type: string
-                  example: 694a88bbcbc8579663486147
-
-                name:
-                  type: string
-                  example: User Name
-
-                avatar:
-                  oneOf:
-                    - type: string
-                      format: uri
-                    - type: 'null'
-
-                description:
-                  type: string
-                  example: Hello everyone, I am happy to share my stories.
-
-                publicStories:
-                  type: array
-                  items:
-                    type: string
-                  example:
-                    - 694a8c750cbe696229c7bb24
-                    - 694b2b4039f9981db9f960d2
+              $ref: ../../components/schemas/user.yaml
 
   404:
     $ref: ../../components/responses/errors.yaml#/NotFound

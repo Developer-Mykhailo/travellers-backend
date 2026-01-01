@@ -648,6 +648,535 @@
         }
       }
     },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get all users",
+        "operationId": "getUsers",
+        "description": "Public endpoint to get list of users with pagination, sorting and filtering",
+        "security": [],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1,
+              "example": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "perPage",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "example": 10
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "name",
+                "publicStories"
+              ],
+              "example": "publicStories"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortOrder",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "example": "desc"
+            }
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "description": "You can pass several names",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "Mykhailo",
+                "Назар Романенко"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users successfully found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Users successfully found!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "allOf": [
+                              {
+                                "$ref": "#/components/schemas/user"
+                              }
+                            ]
+                          }
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "perPage": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "totalItems": {
+                          "type": "integer",
+                          "example": 2
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "hasNextPage": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "hasPreviousPage": {
+                          "type": "boolean",
+                          "example": false
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/users/profile/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get private user profile",
+        "operationId": "getPrivateUserProfile",
+        "description": "Get full user profile including saved and public stories",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User successfully found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User successfully found!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/user"
+                        },
+                        {
+                          "properties": {
+                            "savedStories": {
+                              "type": "array",
+                              "example": [
+                                "68498236a100312bea079029",
+                                "694a8c750cbe696229c7bb24"
+                              ]
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2025-12-23T12:19:07.587Z"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2025-12-26T05:13:44.469Z"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/users/public/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get public user profile",
+        "operationId": "getPublicUserProfile",
+        "description": "Get user profile by ID",
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User successfully found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User successfully found!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/users/toggle-save-story/{id}": {
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Toggle saved story for user",
+        "operationId": "toggleSavedStoryById",
+        "description": "Add or remove a story from the user's saved stories list",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID of the story to toggle in saved stories",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Story successfully added or deleted from saved list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Story 68498236a100312bea079029 was successfully added / deleted"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "saved"
+                      ],
+                      "properties": {
+                        "saved": {
+                          "type": "string",
+                          "example": "true / false"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/users/upload-avatar": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Upload user avatar",
+        "operationId": "uploadUserAvatar",
+        "description": "Upload and set a new avatar for the current user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "avatar"
+                ],
+                "properties": {
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Avatar image file"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Avatar successfully uploaded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Avatar successfully uploaded!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "avatar": {
+                          "type": "string",
+                          "format": "uri"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/users/delete-avatar": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete user avatar",
+        "operationId": "deleteUserAvatar",
+        "description": "Remove the current user's avatar",
+        "responses": {
+          "200": {
+            "description": "Avatar successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Avatar was successfully deleted!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "avatar": {
+                          "type": "null",
+                          "example": null
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/users/update-info": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update user profile information",
+        "operationId": "updateUserInfo",
+        "description": "Update the current user profile information with a description",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "example": "Привіт всім. Люблю подорожувати та ділитись своїми історіями"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User information successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully updated"
+                    },
+                    "data": {
+                      "type": "object",
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/user"
+                        },
+                        {
+                          "properties": {
+                            "savedStories": {
+                              "type": "array",
+                              "example": [
+                                "68498236a100312bea079029",
+                                "694a8c750cbe696229c7bb24"
+                              ]
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2025-12-23T12:19:07.587Z"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2025-12-26T05:13:44.469Z"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/api/stories": {
       "get": {
         "tags": [
@@ -1224,658 +1753,6 @@
           }
         }
       }
-    },
-    "/api/users": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Get all users",
-        "operationId": "getUsers",
-        "description": "Public endpoint to get list of users with pagination, sorting and filtering",
-        "security": [],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "page",
-            "schema": {
-              "type": "integer",
-              "default": 1,
-              "minimum": 1,
-              "example": 1
-            }
-          },
-          {
-            "in": "query",
-            "name": "perPage",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100,
-              "default": 10,
-              "example": 10
-            }
-          },
-          {
-            "in": "query",
-            "name": "sortBy",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "name",
-                "publicStories"
-              ],
-              "example": "publicStories"
-            }
-          },
-          {
-            "in": "query",
-            "name": "sortOrder",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ],
-              "example": "desc"
-            }
-          },
-          {
-            "in": "query",
-            "name": "name",
-            "description": "You can pass several names",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "example": [
-                "Mykhailo",
-                "Назар Романенко"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Users successfully found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Users successfully found!"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "data": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "_id": {
-                                "type": "string",
-                                "example": "694a88bbcbc8579663486147"
-                              },
-                              "name": {
-                                "type": "string",
-                                "example": "User Name"
-                              },
-                              "description": {
-                                "type": "string",
-                                "example": "Привіт всім. Люблю подорожувати та ділитись своїми історіями"
-                              },
-                              "publicStories": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "example": [
-                                  "694a8c750cbe696229c7bb24",
-                                  "694b2b4039f9981db9f960d2"
-                                ]
-                              },
-                              "avatar": {
-                                "oneOf": [
-                                  {
-                                    "type": "string",
-                                    "format": "uri"
-                                  },
-                                  {
-                                    "type": "null"
-                                  }
-                                ]
-                              }
-                            }
-                          }
-                        },
-                        "page": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "perPage": {
-                          "type": "integer",
-                          "example": 10
-                        },
-                        "totalItems": {
-                          "type": "integer",
-                          "example": 2
-                        },
-                        "totalPages": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "hasNextPage": {
-                          "type": "boolean",
-                          "example": false
-                        },
-                        "hasPreviousPage": {
-                          "type": "boolean",
-                          "example": false
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      }
-    },
-    "/api/users/profile/{id}": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Get private user profile",
-        "operationId": "getPrivateUserProfile",
-        "description": "Get full user profile including saved and public stories",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User successfully found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "User successfully found!"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "_id": {
-                          "type": "string",
-                          "example": "694a88bbcbc8579663486147"
-                        },
-                        "name": {
-                          "type": "string",
-                          "example": "User Name"
-                        },
-                        "description": {
-                          "type": "string",
-                          "example": "Hello everyone, I am happy to share my stories."
-                        },
-                        "savedStories": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "example": [
-                            "694a8c750cbe696229c7bb24",
-                            "694b2b4039f9981db9f960d2"
-                          ]
-                        },
-                        "publicStories": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "example": [
-                            "694a8c750cbe696229c7bb24",
-                            "694b2b4039f9981db9f960d2"
-                          ]
-                        },
-                        "createdAt": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2025-12-23T12:19:07.587Z"
-                        },
-                        "updatedAt": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2025-12-23T23:52:32.365Z"
-                        },
-                        "avatar": {
-                          "oneOf": [
-                            {
-                              "type": "string",
-                              "format": "uri"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      }
-    },
-    "/api/users/public/{id}": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Get public user profile",
-        "operationId": "getPublicUserProfile",
-        "description": "Get user profile by ID",
-        "security": [],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User successfully found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "User successfully found!"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "_id": {
-                          "type": "string",
-                          "example": "694a88bbcbc8579663486147"
-                        },
-                        "name": {
-                          "type": "string",
-                          "example": "User Name"
-                        },
-                        "avatar": {
-                          "oneOf": [
-                            {
-                              "type": "string",
-                              "format": "uri"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "description": {
-                          "type": "string",
-                          "example": "Hello everyone, I am happy to share my stories."
-                        },
-                        "publicStories": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "example": [
-                            "694a8c750cbe696229c7bb24",
-                            "694b2b4039f9981db9f960d2"
-                          ]
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      }
-    },
-    "/api/users/toggle-save-story/{id}": {
-      "patch": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Toggle saved story for user",
-        "operationId": "toggleSavedStoryById",
-        "description": "Add or remove a story from the user's saved stories list",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "ID of the story to toggle in saved stories",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Story successfully added or deleted from saved list",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Story 68498236a100312bea079029 was successfully added / deleted"
-                    },
-                    "data": {
-                      "type": "object",
-                      "required": [
-                        "saved"
-                      ],
-                      "properties": {
-                        "saved": {
-                          "type": "string",
-                          "example": "true / false"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      }
-    },
-    "/api/users/upload-avatar": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Upload user avatar",
-        "operationId": "uploadUserAvatar",
-        "description": "Upload and set a new avatar for the current user",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "avatar"
-                ],
-                "properties": {
-                  "avatar": {
-                    "type": "string",
-                    "format": "binary",
-                    "description": "Avatar image file"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Avatar successfully uploaded",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Avatar successfully uploaded!"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "avatar": {
-                          "type": "string",
-                          "format": "uri"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          }
-        }
-      }
-    },
-    "/api/users/delete-avatar": {
-      "delete": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Delete user avatar",
-        "operationId": "deleteUserAvatar",
-        "description": "Remove the current user's avatar",
-        "responses": {
-          "200": {
-            "description": "Avatar successfully deleted",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Avatar was successfully deleted!"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "avatar": {
-                          "type": "null",
-                          "example": null
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      }
-    },
-    "/api/users/update-info": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Update user profile information",
-        "operationId": "updateUserInfo",
-        "description": "Update the current user profile information with a description",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "description": {
-                    "type": "string",
-                    "example": "Привіт всім. Люблю подорожувати та ділитись своїми історіями"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User information successfully updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Successfully updated"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "_id": {
-                          "type": "string",
-                          "example": "694a88bbcbc8579663486147"
-                        },
-                        "name": {
-                          "type": "string",
-                          "example": "User Name"
-                        },
-                        "description": {
-                          "type": "string",
-                          "example": "Привіт всім. Люблю подорожувати та ділитись своїми історіями"
-                        },
-                        "savedStories": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "example": [
-                            "68498236a100312bea079029"
-                          ]
-                        },
-                        "publicStories": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "example": [
-                            "694a8c750cbe696229c7bb24",
-                            "694b2b4039f9981db9f960d2"
-                          ]
-                        },
-                        "createdAt": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2025-12-23T12:19:07.587Z"
-                        },
-                        "updatedAt": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2025-12-26T05:13:44.469Z"
-                        },
-                        "avatar": {
-                          "oneOf": [
-                            {
-                              "type": "string",
-                              "format": "uri"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      }
     }
   },
   "components": {
@@ -2062,6 +1939,41 @@
       }
     },
     "schemas": {
+      "user": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "694a88bbcbc8579663486147"
+          },
+          "name": {
+            "type": "string",
+            "example": "User Name"
+          },
+          "description": {
+            "type": "string",
+            "example": "Hello everyone, I am happy to share my stories."
+          },
+          "avatar": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "publicStories": {
+            "type": "array",
+            "example": [
+              "68498236a100312bea079029",
+              "694a8c750cbe696229c7bb24"
+            ]
+          }
+        }
+      },
       "story": {
         "type": "object",
         "properties": {
