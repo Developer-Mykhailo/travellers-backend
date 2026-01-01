@@ -486,6 +486,25 @@
         }
       }
     },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Log out user",
+        "operationId": "logoutUser",
+        "description": "Log out and invalidate user's session",
+        "security": [],
+        "responses": {
+          "204": {
+            "description": "Successfully logged out"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
     "/api/stories": {
       "get": {
         "tags": [
@@ -1732,30 +1751,17 @@
               "type": "object",
               "properties": {
                 "status": {
-                  "type": "integer",
-                  "example": 400
-                },
-                "code": {
-                  "type": "string",
-                  "example": "BadRequestError"
+                  "type": "integer"
                 },
                 "message": {
                   "type": "string",
-                  "example": "Validation failed"
+                  "example": "Validation error"
                 },
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "field": {
-                        "type": "string",
-                        "example": "email"
-                      },
-                      "message": {
-                        "type": "string",
-                        "example": "Invalid email format"
-                      }
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
                     }
                   }
                 }
@@ -1763,24 +1769,16 @@
             },
             "example": {
               "status": 400,
-              "code": "BadRequestError",
-              "message": "Validation failed",
-              "errors": [
-                {
-                  "field": "email",
-                  "message": "Invalid email format"
-                },
-                {
-                  "field": "password",
-                  "message": "Password too short"
-                }
-              ]
+              "message": "BadRequestError",
+              "data": {
+                "message": "Error text"
+              }
             }
           }
         }
       },
       "ConflictError": {
-        "description": "Conflict occurred",
+        "description": "Email already exists",
         "content": {
           "application/json": {
             "schema": {
@@ -1790,29 +1788,20 @@
                   "type": "integer",
                   "example": 409
                 },
-                "code": {
+                "message": {
                   "type": "string",
                   "example": "ConflictError"
                 },
-                "message": {
-                  "type": "string",
-                  "example": "Email already in use"
-                },
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email already in use"
+                    }
                   }
                 }
               }
-            },
-            "example": {
-              "status": 409,
-              "code": "ConflictError",
-              "message": "Email already in use",
-              "errors": [
-                "Email already in use"
-              ]
             }
           }
         }
@@ -1825,40 +1814,41 @@
               "type": "object",
               "properties": {
                 "status": {
-                  "type": "integer",
-                  "example": 401
-                },
-                "code": {
-                  "type": "string",
-                  "example": "UnauthorizedError"
+                  "type": "integer"
                 },
                 "message": {
                   "type": "string",
-                  "example": "Access denied"
+                  "description": "Error definition"
                 },
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "example": "Session not found"
+                "data": {
+                  "type": "object",
+                  "description": "list of possible errors",
+                  "properties": {
+                    "message": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
                   }
                 }
               }
             },
             "example": {
               "status": 401,
-              "code": "UnauthorizedError",
-              "message": "Access denied",
-              "errors": [
-                "Session not found",
-                "Access token expired"
-              ]
+              "message": "UnauthorizedError",
+              "data": {
+                "message": [
+                  "Session not found",
+                  "Access token expired"
+                ]
+              }
             }
           }
         }
       },
       "NotFound": {
-        "description": "Resource not found",
+        "description": "Resource not Found",
         "content": {
           "application/json": {
             "schema": {
@@ -1868,31 +1858,33 @@
                   "type": "integer",
                   "example": 404
                 },
-                "code": {
-                  "type": "string",
-                  "example": "NotFoundError"
-                },
                 "message": {
-                  "type": "string",
-                  "example": "Resource not found"
+                  "type": "string"
                 },
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "example": "User not found"
+                "data": {
+                  "type": "object",
+                  "description": "list of possible errors",
+                  "properties": {
+                    "message": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
                   }
                 }
               }
             },
             "example": {
               "status": 404,
-              "code": "NotFoundError",
-              "message": "Resource not found",
-              "errors": [
-                "User not found",
-                "Story not found"
-              ]
+              "message": "NotFoundError",
+              "data": {
+                "message": [
+                  "Route not found",
+                  "User not found",
+                  "Story not found"
+                ]
+              }
             }
           }
         }
