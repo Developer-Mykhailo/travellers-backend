@@ -1,0 +1,65 @@
+tags:
+  - Auth
+summary: Confirm Google OAuth
+operationId: confirmGoogleOAuth
+description: Confirm Google OAuth authorization code and create user session
+
+security: []
+
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - code
+        properties:
+          code:
+            type: string
+            description: Authorization code returned by Google
+            example: 4/0AbUR2V...
+
+responses:
+  200:
+    description: Successfully logged in via Google OAuth
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully logged in via Google OAuth!
+            data:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  example: xAwbHNTV4tQFutNDtVdaBa6vHJT8V64uyRTpYEWq
+
+  400:
+    description: Invalid or missing authorization code
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 400
+            message:
+              type: string
+              example: BadRequestError
+            data:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Invalid OAuth code
+
+  500:
+    $ref: ../../../components/responses/errors.yaml#/InternalServerError

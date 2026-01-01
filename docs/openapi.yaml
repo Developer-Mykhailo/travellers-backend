@@ -48,6 +48,10 @@ paths:
 
   /api/auth/get-oauth-url:
     get:
+      $ref: ../swagger/paths/auth/google/confirm-oauth.yaml
+
+  /api/auth/confirm-oauth:
+    post:
       $ref: ../swagger/paths/auth/google/get-oauth-url.yaml
 
   # Stories
