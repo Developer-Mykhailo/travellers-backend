@@ -46,6 +46,10 @@ paths:
     post:
       $ref: ../swagger/paths/auth/logout.yaml
 
+  /api/auth/get-oauth-url:
+    get:
+      $ref: ../swagger/paths/auth/google/get-oauth-url.yaml
+
   # Stories
   /api/stories:
     get:

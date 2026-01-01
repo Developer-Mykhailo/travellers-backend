@@ -1,0 +1,34 @@
+tags:
+  - Auth
+summary: Get Google OAuth URL
+operationId: getGoogleOAuthUrl
+description: Generate Google OAuth authorization URL for client redirection
+
+security: []
+
+responses:
+  200:
+    description: OAuth URL successfully generated
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully get Google OAuth url!
+            data:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  example: https://accounts.google.com/o/oauth2/v2/auth?scope=...
+  400:
+    $ref: ../../../components/responses/errors.yaml#/BadRequest
+
+  500:
+    $ref: ../../../components/responses/errors.yaml#/InternalServerError
