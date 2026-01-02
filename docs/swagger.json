@@ -11,10 +11,10 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3001"
+      "url": "https://travellers-backend.onrender.com"
     },
     {
-      "url": "https://travellers-backend.onrender.com"
+      "url": "http://localhost:3001"
     }
   ],
   "security": [
