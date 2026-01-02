@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3001"
+      "url": "https://travellers-backend.onrender.com"
     }
   ],
   "security": [
