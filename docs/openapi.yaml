@@ -46,13 +46,14 @@ paths:
     post:
       $ref: ../swagger/paths/auth/logout.yaml
 
+  #Google
   /api/auth/get-oauth-url:
     get:
-      $ref: ../swagger/paths/auth/google/confirm-oauth.yaml
+      $ref: ../swagger/paths/auth/google/get-oauth-url.yaml
 
   /api/auth/confirm-oauth:
     post:
-      $ref: ../swagger/paths/auth/google/get-oauth-url.yaml
+      $ref: ../swagger/paths/auth/google/confirm-oauth.yaml
 
   # Users
   /api/users:
