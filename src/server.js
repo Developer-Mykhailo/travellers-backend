@@ -20,7 +20,14 @@ export const startServer = () => {
 
   app.use(express.json());
   app.use(helmet());
-  app.use(cors());
+  app.use(
+    cors({
+      origin: [
+        'http://localhost:5173',
+        'https://travellers-backend.onrender.com',
+      ],
+    }),
+  );
   app.use(cookieParser());
 
   app.use(
