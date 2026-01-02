@@ -17,8 +17,8 @@ tags:
     description: Operations about stories.
 
 servers:
-  - url: http://localhost:3001
   - url: https://travellers-backend.onrender.com
+  - url: http://localhost:3001
 paths:
   #
   # Auth
