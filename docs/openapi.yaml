@@ -60,7 +60,7 @@ paths:
     get:
       $ref: ../swagger/paths/users/get-all-users.yaml
 
-  /api/users/profile/{id}:
+  /api/users/my-profile:
     get:
       $ref: ../swagger/paths/users/get-private-profile.yaml
 

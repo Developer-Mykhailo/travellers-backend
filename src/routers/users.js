@@ -22,8 +22,7 @@ userRouter.get('/', ctrlWrapper(getUsersController));
 userRouter.get('/public/:id', isValidId, ctrlWrapper(getUserByIdController));
 
 userRouter.get(
-  '/profile/:id',
-  isValidId,
+  '/my-profile',
   authenticate,
   ctrlWrapper(getUserProfileByIdController),
 );

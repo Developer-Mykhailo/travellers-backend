@@ -788,7 +788,7 @@
         }
       }
     },
-    "/api/users/profile/{id}": {
+    "/api/users/my-profile": {
       "get": {
         "tags": [
           "Users"
