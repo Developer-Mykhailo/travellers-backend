@@ -796,16 +796,6 @@
         "summary": "Get private user profile",
         "operationId": "getPrivateUserProfile",
         "description": "Get full user profile including saved and public stories",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "User successfully found",
