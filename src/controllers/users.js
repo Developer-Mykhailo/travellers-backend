@@ -15,7 +15,11 @@ import { parseSortParams } from '../utils/parseSortParams.js';
 //!---------------------------------------------------------------
 export const getUsersController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
-  const { sortBy, sortOrder } = parseSortParams(req.query, USERS_SORT_FILEDS);
+  const { sortBy, sortOrder } = parseSortParams(
+    req.query,
+    USERS_SORT_FILEDS,
+    '_id',
+  );
 
   const filters = await parseFilters(req.query);
 
