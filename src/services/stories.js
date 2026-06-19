@@ -106,13 +106,15 @@ export const getStoryById = async (id) => {
   if (!story) throw createHttpError(400, `Story not foud: ${id}`);
 
   const categoryDoc = await CategoryCollection.findById(story.category);
-  const ownerDoc = await UserCollection.findById(story.owner).select('name');
+  const ownerDoc = await UserCollection.findById(story.owner).select(
+    'name avatar',
+  );
 
   const data = {
     ...story,
     img: story.img?.url ?? null,
     category: categoryDoc.name,
-    owner: ownerDoc.name,
+    owner: { name: ownerDoc.name, avatar: ownerDoc.avatar?.url || null },
   };
 
   return data;
