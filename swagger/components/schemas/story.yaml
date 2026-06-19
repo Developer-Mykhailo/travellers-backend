@@ -22,8 +22,8 @@ properties:
 
   owner:
     description: User ID or user name
-    type: string
-    example: User Name
+    type: object
+    example: { name: User Name, avatar: 'http://example.com' }
 
   date:
     type: string
