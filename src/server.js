@@ -26,6 +26,7 @@ export const startServer = () => {
         'http://localhost:5173',
         'https://travellers-backend.onrender.com',
       ],
+      credentials: true,
     }),
   );
   app.use(cookieParser());
