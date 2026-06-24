@@ -25,6 +25,7 @@ const createSession = () => ({
   refreshToken: randomBytes(30).toString('base64'),
   accessTokenValidUntil: new Date(Date.now() + accessTokenLifeTime),
   refreshTokenValidUntil: new Date(Date.now() + refreshTokenLifeTime),
+  expiresAt: new Date(Date.now() + refreshTokenLifeTime),
 });
 
 //!---------------------------------------------------------------

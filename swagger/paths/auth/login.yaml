@@ -30,10 +30,7 @@ responses:
       application/json:
         schema:
           type: object
-          required:
-            - status
-            - message
-            - data
+
           properties:
             status:
               type: integer
@@ -43,49 +40,16 @@ responses:
               example: Successfully logged in a user!
             data:
               type: object
-              required:
-                - userId
-                - accessToken
-                - refreshToken
-                - accessTokenValidUntil
-                - refreshTokenValidUntil
-              properties:
-                userId:
-                  type: string
-                  example: 6954c64c7da5e2d7bd54dcab
 
+              properties:
                 accessToken:
                   type: string
                   example: fzsgimWVxDKyl6+FuaSn8T5dbExCEfUTS8V5QD3v
-
-                refreshToken:
-                  type: string
-                  example: 6ZqGS0ZudjyCrdJFYNWAb49R0pXLr3cSWcMKn5OE
 
                 accessTokenValidUntil:
                   type: string
                   format: date-time
                   example: 2025-12-31T12:33:26.380Z
-
-                refreshTokenValidUntil:
-                  type: string
-                  format: date-time
-                  example: 2026-01-07T07:33:26.380Z
-
-                _id:
-                  type: string
-                  description: Session ID
-                  example: 6954d1c6691b1c6dc6e7a3be
-
-                createdAt:
-                  type: string
-                  format: date-time
-                  example: 2025-12-31T07:33:26.385Z
-
-                updatedAt:
-                  type: string
-                  format: date-time
-                  example: 2025-12-31T07:33:26.385Z
 
   400:
     $ref: ../../components/responses/errors.yaml#/BadRequest

@@ -2,20 +2,21 @@ tags:
   - Auth
 summary: Refresh access token
 operationId: refreshToken
-description: Refresh a user session using a valid refresh token
+description: Refreshes the access token using the refreshToken and sessionId
+  stored in HttpOnly cookies.
 
-requestBody:
-  required: true
-  content:
-    application/json:
-      schema:
-        type: object
-        required:
-          - refreshToken
-        properties:
-          refreshToken:
-            type: string
-            example: 6ZqGS0ZudjyCrdJFYNWAb49R0pXLr3cSWcMKn5OE
+parameters:
+  - in: cookie
+    name: refreshToken
+    required: true
+    schema:
+      type: string
+
+  - in: cookie
+    name: sessionId
+    required: true
+    schema:
+      type: string
 
 responses:
   200:
@@ -33,12 +34,13 @@ responses:
               example: Successfully refreshed a session!
             data:
               type: object
-              required:
-                - accessToken
               properties:
                 accessToken:
                   type: string
                   example: 7WR50Ls658t8LVOPB7geJ0NJ0RtZScr0C3jWK8Pc
+                accessTokenValidUntil:
+                  type: string
+                  example: '2026-06-24T20:50:00.969Z'
 
   401:
     $ref: ../../components/responses/errors.yaml#/Unauthorized

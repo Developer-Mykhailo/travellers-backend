@@ -182,11 +182,6 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
                   "properties": {
                     "status": {
                       "type": "integer",
@@ -198,50 +193,15 @@
                     },
                     "data": {
                       "type": "object",
-                      "required": [
-                        "userId",
-                        "accessToken",
-                        "refreshToken",
-                        "accessTokenValidUntil",
-                        "refreshTokenValidUntil"
-                      ],
                       "properties": {
-                        "userId": {
-                          "type": "string",
-                          "example": "6954c64c7da5e2d7bd54dcab"
-                        },
                         "accessToken": {
                           "type": "string",
                           "example": "fzsgimWVxDKyl6+FuaSn8T5dbExCEfUTS8V5QD3v"
-                        },
-                        "refreshToken": {
-                          "type": "string",
-                          "example": "6ZqGS0ZudjyCrdJFYNWAb49R0pXLr3cSWcMKn5OE"
                         },
                         "accessTokenValidUntil": {
                           "type": "string",
                           "format": "date-time",
                           "example": "2025-12-31T12:33:26.380Z"
-                        },
-                        "refreshTokenValidUntil": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2026-01-07T07:33:26.380Z"
-                        },
-                        "_id": {
-                          "type": "string",
-                          "description": "Session ID",
-                          "example": "6954d1c6691b1c6dc6e7a3be"
-                        },
-                        "createdAt": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2025-12-31T07:33:26.385Z"
-                        },
-                        "updatedAt": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2025-12-31T07:33:26.385Z"
                         }
                       }
                     }
@@ -292,26 +252,25 @@
         ],
         "summary": "Refresh access token",
         "operationId": "refreshToken",
-        "description": "Refresh a user session using a valid refresh token",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "refreshToken"
-                ],
-                "properties": {
-                  "refreshToken": {
-                    "type": "string",
-                    "example": "6ZqGS0ZudjyCrdJFYNWAb49R0pXLr3cSWcMKn5OE"
-                  }
-                }
-              }
+        "description": "Refreshes the access token using the refreshToken and sessionId stored in HttpOnly cookies.",
+        "parameters": [
+          {
+            "in": "cookie",
+            "name": "refreshToken",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "sessionId",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Successfully refreshed session",
@@ -330,13 +289,14 @@
                     },
                     "data": {
                       "type": "object",
-                      "required": [
-                        "accessToken"
-                      ],
                       "properties": {
                         "accessToken": {
                           "type": "string",
                           "example": "7WR50Ls658t8LVOPB7geJ0NJ0RtZScr0C3jWK8Pc"
+                        },
+                        "accessTokenValidUntil": {
+                          "type": "string",
+                          "example": "2026-06-24T20:50:00.969Z"
                         }
                       }
                     }
