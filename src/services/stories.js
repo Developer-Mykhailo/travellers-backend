@@ -1,16 +1,15 @@
 import createHttpError from 'http-errors';
-
+import mongoose from 'mongoose';
 import { CategoryCollection } from '../db/models/category.js';
 import { StoriesCollection } from '../db/models/story.js';
 import { UserCollection } from '../db/models/users.js';
-
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
-import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
 import {
   deleteFileFromCloudinary,
   saveFileToCloudinary,
 } from '../utils/saveFileToCloudinary.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 //!---------------------------------------------------------------
 export const getCategories = async () => {
@@ -231,20 +230,48 @@ export const updateStory = async (userId, storyId, payload, photo) => {
 
 //!---------------------------------------------------------------
 export const deleteStory = async (_id, userId) => {
-  const story = await StoriesCollection.findOne({ _id, owner: userId }).lean();
-  if (!story) throw createHttpError(404, 'Story not found');
+  const session = await mongoose.startSession();
 
-  const { img: { publicId } = {} } = story;
+  try {
+    session.startTransaction();
 
-  if (publicId) {
-    await deleteFileFromCloudinary(publicId);
+    const story = await StoriesCollection.findOne({
+      _id,
+      owner: userId,
+    })
+      .session(session)
+      .lean();
+
+    if (!story) throw createHttpError(404, 'Story not found');
+
+    await StoriesCollection.deleteOne({ _id, owner: userId }).session(session);
+
+    await UserCollection.findByIdAndUpdate(
+      userId,
+      { $pull: { publicStories: _id } },
+      { new: true },
+    ).session(session);
+
+    await session.commitTransaction();
+
+    try {
+      const publicId = story.img?.publicId;
+
+      if (publicId) {
+        await deleteFileFromCloudinary(publicId);
+      }
+    } catch (error) {
+      console.error('Cloudinary delete failed:', error);
+    }
+
+    return;
+  } catch (error) {
+    if (session.inTransaction()) {
+      await session.abortTransaction();
+    }
+
+    throw error;
+  } finally {
+    session.endSession();
   }
-
-  await UserCollection.findByIdAndUpdate(
-    userId,
-    { $pull: { publicStories: _id } },
-    { new: true },
-  );
-
-  return await StoriesCollection.deleteOne({ _id, owner: userId });
 };

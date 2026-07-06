@@ -109,9 +109,9 @@ export const deleteAvatarController = async (req, res) => {
 //!---------------------------------------------------------------
 export const updateUserInfoController = async (req, res) => {
   const { _id } = req.user;
-  const { description } = req.body;
+  const newData = req.body;
 
-  const data = await updateUserInfo(_id, description);
+  const data = await updateUserInfo(_id, newData);
 
   res.json({
     status: 200,

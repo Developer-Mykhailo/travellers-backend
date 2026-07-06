@@ -188,12 +188,20 @@ export const deleteAvatar = async (_id) => {
 };
 
 //!---------------------------------------------------------------
-export const updateUserInfo = async (_id, description) => {
-  const updatedUser = await UserCollection.findByIdAndUpdate(
-    _id,
-    { description },
-    { new: true },
-  ).select('-email -avatar.publicId -password');
+export const updateUserInfo = async (_id, { description, publicStories }) => {
+  const updateData = {};
+
+  if (description !== undefined) {
+    updateData.description = description;
+  }
+
+  if (publicStories !== undefined) {
+    updateData.publicStories = publicStories;
+  }
+
+  const updatedUser = await UserCollection.findByIdAndUpdate(_id, updateData, {
+    new: true,
+  }).select('-email -avatar.publicId -password');
 
   return { ...updatedUser.toObject(), avatar: updatedUser.avatar.url };
 };

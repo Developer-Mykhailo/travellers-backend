@@ -21,7 +21,7 @@ servers:
   - url: http://localhost:3001
 paths:
   #
-  # Auth
+  #region Auth
   /api/auth/register:
     post:
       $ref: ../swagger/paths/auth/register.yaml
@@ -45,8 +45,9 @@ paths:
   /api/auth/logout:
     post:
       $ref: ../swagger/paths/auth/logout.yaml
+  #endregion Auth
 
-  #Google
+  #region Google
   /api/auth/get-oauth-url:
     get:
       $ref: ../swagger/paths/auth/google/get-oauth-url.yaml
@@ -54,8 +55,9 @@ paths:
   /api/auth/confirm-oauth:
     post:
       $ref: ../swagger/paths/auth/google/confirm-oauth.yaml
+  #endregion Google
 
-  # Users
+  #region Users
   /api/users:
     get:
       $ref: ../swagger/paths/users/get-all-users.yaml
@@ -83,8 +85,9 @@ paths:
   /api/users/update-info:
     post:
       $ref: ../swagger/paths/users/update-user-info.yaml
+  #endregion Users
 
-  # Stories
+  #region Stories
   /api/stories:
     get:
       $ref: ../swagger/paths/stories/get-public-stories.yaml
@@ -106,6 +109,7 @@ paths:
   /api/stories/categories:
     get:
       $ref: ../swagger/paths/stories/get-categories.yaml
+  #endregion Stories
 
 components:
   securitySchemes:
