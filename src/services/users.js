@@ -99,6 +99,16 @@ export const toggleSavedStory = async (storyId, userId) => {
 
   if (!isStoryExist) throw createHttpError(400, `Story not foud: ${storyId}`);
 
+  const prepareStory = (story) => {
+    const { owner, img, ...rest } = story.toObject();
+
+    return {
+      ...rest,
+      img: img?.url,
+      owner: { ...owner, avatar: owner?.avatar?.url },
+    };
+  };
+
   const session = await startSession();
   session.startTransaction();
 
@@ -112,14 +122,16 @@ export const toggleSavedStory = async (storyId, userId) => {
     );
 
     if (pullResult.modifiedCount > 0) {
-      await StoriesCollection.findByIdAndUpdate(
+      const updatedStory = await StoriesCollection.findByIdAndUpdate(
         storyId,
         { $inc: { favoriteCount: -1 } },
         { session },
-      );
+      )
+        .select('-img.publicId ')
+        .populate({ path: 'owner', select: 'name avatar.url' });
 
       await session.commitTransaction();
-      return { saved: false };
+      return { saved: false, updatedStory: prepareStory(updatedStory) };
     }
 
     await UserCollection.updateOne(
@@ -128,14 +140,16 @@ export const toggleSavedStory = async (storyId, userId) => {
       { session },
     );
 
-    await StoriesCollection.findByIdAndUpdate(
+    const updatedStory = await StoriesCollection.findByIdAndUpdate(
       storyId,
       { $inc: { favoriteCount: 1 } },
       { session },
-    );
+    )
+      .select('-img.publicId ')
+      .populate({ path: 'owner', select: 'name avatar.url' });
 
     await session.commitTransaction();
-    return { saved: true };
+    return { saved: true, updatedStory: prepareStory(updatedStory) };
   } catch (error) {
     await session.abortTransaction();
     throw error;

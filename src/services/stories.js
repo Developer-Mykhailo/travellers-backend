@@ -113,7 +113,11 @@ export const getStoryById = async (id) => {
     ...story,
     img: story.img?.url ?? null,
     category: categoryDoc.name,
-    owner: { name: ownerDoc.name, avatar: ownerDoc.avatar?.url || null },
+    owner: {
+      id: ownerDoc._id,
+      name: ownerDoc.name,
+      avatar: ownerDoc.avatar?.url || null,
+    },
   };
 
   return data;

@@ -890,11 +890,6 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
                   "properties": {
                     "status": {
                       "type": "integer",
@@ -906,13 +901,46 @@
                     },
                     "data": {
                       "type": "object",
-                      "required": [
-                        "saved"
-                      ],
                       "properties": {
                         "saved": {
                           "type": "string",
                           "example": "true / false"
+                        },
+                        "updatedStory": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/story"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "owner": {
+                                  "type": "object",
+                                  "properties": {
+                                    "_id": {
+                                      "type": "string",
+                                      "example": "64f1c9c2e4b0f5a123456789"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "example": "User Name"
+                                    },
+                                    "avatar": {
+                                      "oneOf": [
+                                        {
+                                          "type": "string",
+                                          "format": "uri"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
                         }
                       }
                     }
@@ -1190,7 +1218,7 @@
               },
               "example": [
                 "Mykhailo",
-                "Назар"
+                "Nazar"
               ]
             }
           },
@@ -1492,7 +1520,40 @@
                     },
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/story"
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/story"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "owner": {
+                              "type": "object",
+                              "properties": {
+                                "_id": {
+                                  "type": "string",
+                                  "example": "64f1c9c2e4b0f5a123456789"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "example": "User Name"
+                                },
+                                "avatar": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string",
+                                      "format": "uri"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
                     }
                   }
                 }
