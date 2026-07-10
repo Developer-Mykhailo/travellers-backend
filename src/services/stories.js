@@ -217,18 +217,23 @@ export const updateStory = async (userId, storyId, payload, photo) => {
     },
   ).populate([
     { path: 'category', select: 'name' },
-    { path: 'owner', select: 'name' },
+    { path: 'owner', select: 'name avatar.url' },
   ]);
 
   if (photo && oldPublicId) {
     await deleteFileFromCloudinary(oldPublicId);
   }
 
-  const storyObj = updatedStory.toObject();
+  const { owner, ...rest } = updatedStory.toObject();
 
   return {
-    ...storyObj,
-    img: storyObj.img?.url ?? null,
+    ...rest,
+    img: rest.img?.url ?? null,
+    owner: {
+      id: owner._id,
+      name: owner.name,
+      avatar: owner.avatar?.url ?? null,
+    },
   };
 };
 
