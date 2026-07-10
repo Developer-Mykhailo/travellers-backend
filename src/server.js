@@ -24,7 +24,6 @@ export const startServer = () => {
     cors({
       origin: [
         'http://localhost:5173',
-        'https://travellers-backend.onrender.com',
         'https://travellers-frontend-react.vercel.app',
       ],
       credentials: true,
