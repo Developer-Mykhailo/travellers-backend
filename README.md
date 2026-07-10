@@ -40,7 +40,7 @@ Travellers App is a backend service for an application designed for travelers wh
 - **ESLint** — code quality checks
 - **Nodemon** — automatic server restart in development
 
-## 📁 Структура проєкту
+## 📁 Structure
 
 ```
 ├── docs/                 # OpenAPI documentation (Swagger)
