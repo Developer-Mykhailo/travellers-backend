@@ -1,5 +1,6 @@
 export const STORIES_SORT_FIELDS = [
-  'date',
+  'updatedAt',
+  'createdAt',
   'title',
   'article',
   'favoriteCount',
@@ -8,4 +9,4 @@ export const STORIES_SORT_FIELDS = [
 
 export const USERS_SORT_FILEDS = ['name', 'publicStories'];
 
-export const SORT_ORDER_LIST = ['asc', 'desc'];
+export const SORT_ORDER_LIST = ['desc', 'asc'];
