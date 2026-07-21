@@ -69,7 +69,11 @@ export const getStories = async (page, perPage, sortBy, sortOrder, filters) => {
       .clone()
       .skip(skip)
       .limit(perPage)
-      .sort({ [sortBy]: sortOrder })
+      // .sort({ [sortBy]: sortOrder })
+      .sort({
+        [sortBy]: sortOrder,
+        _id: sortOrder,
+      })
       .populate([
         { path: 'owner', select: 'name avatar' },
         { path: 'category', select: 'name' },
@@ -156,7 +160,13 @@ export const addStory = async (payload, userId, photo) => {
   ]);
 
   await UserCollection.findByIdAndUpdate(userId, {
-    $addToSet: { publicStories: newStory._id },
+    // $addToSet: { publicStories: newStory._id },
+    $push: {
+      publicStories: {
+        $each: [newStory._id],
+        $position: 0,
+      },
+    },
   }).lean();
 
   const storyObj = newStory.toObject();

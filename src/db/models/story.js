@@ -27,13 +27,6 @@ const storySchema = new Schema(
       ref: 'users',
       required: true,
     },
-    date: {
-      type: String,
-      default: () => {
-        const now = new Date();
-        return now.toISOString().split('T')[0];
-      },
-    },
     favoriteCount: {
       type: Number,
       default: 0,
