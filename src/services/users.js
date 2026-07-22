@@ -79,16 +79,24 @@ export const getUserProfileById = async (id) => {
     .select('_id')
     .lean();
 
-  if (existingStories.length !== user.savedStories.length) {
+  const storiesMap = new Map(
+    existingStories.map((story) => [story._id.toString(), story]),
+  );
+
+  const orderedStories = user.savedStories
+    .map((id) => storiesMap.get(id.toString()))
+    .filter(Boolean);
+
+  if (orderedStories.length !== user.savedStories.length) {
     await UserCollection.updateOne(
       { _id: user._id },
-      { $set: { savedStories: existingStories } },
+      { $set: { savedStories: orderedStories.map((story) => story._id) } },
     );
   }
 
   return {
     ...user.toObject(),
-    savedStories: existingStories.map((story) => story._id.toString()),
+    savedStories: orderedStories.map((story) => story._id.toString()),
     avatar: user.avatar?.url ?? null,
   };
 };
@@ -136,7 +144,15 @@ export const toggleSavedStory = async (storyId, userId) => {
 
     await UserCollection.updateOne(
       { _id: userId },
-      { $addToSet: { savedStories: storyObjectId } },
+      // { $addToSet: { savedStories: storyObjectId } },
+      {
+        $push: {
+          savedStories: {
+            $each: [storyObjectId],
+            $position: 0,
+          },
+        },
+      },
       { session },
     );
 
